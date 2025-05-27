@@ -18,4 +18,15 @@
   .form-check-inline {
     margin-right: 50px;
   }
+
+  .btn-purple {
+    background-color: #DA70D6;
+    color: white;
+    border: none;
+  }
+  
+  .btn-purple:hover {
+    background-color: #c060c0;
+  }
+  
    

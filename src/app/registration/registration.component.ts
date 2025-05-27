@@ -20,7 +20,7 @@ export class RegistrationComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       passwordRepeat: ['', Validators.required],
-      role: ['', Validators.required]
+      role: ['User', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }
  

@@ -64,15 +64,15 @@
                 <label class="col-sm-4 col-form-label"><b>Role</b></label>
                 <div class="col-sm-8">
                   <select class="form-select" formControlName="role">
-                    <option >Admin</option>
-                    <option selected>User</option>
+                    <option value="Admin" >Admin</option>
+                    <option value="User">User</option>
                   </select>
                 </div>
               </div>
   
               <!-- Buttons -->
               <div class="text-center mt-4">
-                <input type="submit" class="btn btn-success me-2" value="Register" [disabled]="registrationForm.invalid">
+                <input type="submit" class="btn btn-purple  me-2" value="Register" [disabled]="registrationForm.invalid">
                 <input type="reset" class="btn btn-secondary" value="Reset" (click)="onReset()">
               </div>
   
