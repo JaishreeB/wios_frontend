@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><img src="\logo.png" style="height: 40px;width: 70px; padding-right: 10px;"/>ZENTRAK</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/landing">Home</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="#">Zone</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Vendor</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Stock</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Transaction</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Metrics</a></li>
+      </ul>
+
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link"  routerLink="/signup"><i class="fas fa-user-plus"></i> Sign Up</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i> Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

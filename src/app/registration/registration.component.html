@@ -1,0 +1,85 @@
+<div class="container mt-5 pt-5" style="margin-top: 300px;padding-top: 300px">
+    <div class="row justify-content-center align-items-center">
+      <!-- Left Column: Image -->
+      <div class="col-md-6 text-center mb-4 mb-md-0">
+        <img src="/signup.jpg" alt="Registration"  style="max-height: 400px;">
+      </div>
+  
+      <!-- Right Column: Form -->
+      <div class="col-md-6 mt-5">
+        <div class="card shadow">
+          <div class="card-body">
+            <form [formGroup]="registrationForm" (ngSubmit)="onSubmit(registrationForm)">
+              
+              <!-- Username -->
+              <div class="mb-3 row align-items-center">
+                <label class="col-sm-4 col-form-label"><b>Name</b></label>
+                <div class="col-sm-8">
+                  <input type="text" formControlName="username" class="form-control" placeholder="Enter your username">
+                  <div *ngIf="registrationForm.controls['username'].invalid && registrationForm.controls['username'].touched"
+                       class="alert alert-danger mt-2">
+                    Username Length Must Be 5-10
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Email -->
+              <div class="mb-3 row align-items-center">
+                <label class="col-sm-4 col-form-label"><b>Email</b></label>
+                <div class="col-sm-8">
+                  <input type="email" formControlName="email" class="form-control" placeholder="Enter your email">
+                  <div *ngIf="registrationForm.controls['email'].invalid && registrationForm.controls['email'].touched"
+                       class="alert alert-danger mt-2">
+                    Valid email is required
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Password -->
+              <div class="mb-3 row align-items-center">
+                <label class="col-sm-4 col-form-label"><b>Password</b></label>
+                <div class="col-sm-8">
+                  <input type="password" formControlName="password" class="form-control" placeholder="Enter password">
+                  <div *ngIf="registrationForm.controls['password'].invalid && registrationForm.controls['password'].touched"
+                       class="alert alert-danger mt-2">
+                    Password is required
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Repeat Password -->
+              <div class="mb-3 row align-items-center">
+                <label class="col-sm-4 col-form-label"><b>Repeat Password</b></label>
+                <div class="col-sm-8">
+                  <input type="password" formControlName="passwordRepeat" class="form-control" placeholder="Repeat your password">
+                  <div *ngIf="registrationForm.controls['passwordRepeat'].invalid && registrationForm.controls['passwordRepeat'].touched"
+                       class="alert alert-danger mt-2">
+                    Passwords must match
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Role -->
+              <div class="mb-3 row align-items-center">
+                <label class="col-sm-4 col-form-label"><b>Role</b></label>
+                <div class="col-sm-8">
+                  <select class="form-select" formControlName="role">
+                    <option >Admin</option>
+                    <option selected>User</option>
+                  </select>
+                </div>
+              </div>
+  
+              <!-- Buttons -->
+              <div class="text-center mt-4">
+                <input type="submit" class="btn btn-success me-2" value="Register" [disabled]="registrationForm.invalid">
+                <input type="reset" class="btn btn-secondary" value="Reset" (click)="onReset()">
+              </div>
+  
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
