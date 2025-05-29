@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonServiceService } from '../common-service.service';
+import { LoginService, LoginUser } from '../login.service';
 
 @Component({
   selector: 'login',
@@ -11,18 +12,24 @@ import { CommonServiceService } from '../common-service.service';
 })
 
 export class LoginComponent {
-  constructor(private router:Router,private commonService:CommonServiceService) { }
-  validate(form:NgForm){
-    console.log("logged in.......")
-    console.log(form)
+  constructor(private myservice:LoginService,private router:Router,private commonService:CommonServiceService) { }
+  // validate(form:NgForm){
+  //   console.log("logged in.......")
+  //   console.log(form)
+  //   console.log(form.value)
+  //   var uname= localStorage.getItem("username")
+  //   var psw=localStorage.getItem("password")
+  //   if(uname==form.value.username && psw==form.value.password){
+  //     this.commonService.login()
+  //     console.log("logged in")
+  //     this.router.navigate([""])
+  //   }
+  // }
+  authLogin(form:NgForm):any{
+    console.log("logged in ................")
     console.log(form.value)
-    var uname= localStorage.getItem("username")
-    var psw=localStorage.getItem("password")
-    if(uname==form.value.username && psw==form.value.password){
-      this.commonService.login()
-      console.log("logged in")
-      this.router.navigate([""])
-    }
+    this.myservice.LoginUser(form.value).subscribe(response=>{console.log("JWT"+response)});
+
   }
 
 
