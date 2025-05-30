@@ -15,8 +15,8 @@
               <div class="mb-3 row align-items-center">
                 <label class="col-sm-4 col-form-label"><b>Name</b></label>
                 <div class="col-sm-8">
-                  <input type="text" formControlName="username" class="form-control" placeholder="Enter your username">
-                  <div *ngIf="registrationForm.controls['username'].invalid && registrationForm.controls['username'].touched"
+                  <input type="text" formControlName="name" class="form-control" placeholder="Enter your username">
+                  <div *ngIf="registrationForm.controls['name'].invalid && registrationForm.controls['name'].touched"
                        class="alert alert-danger mt-2">
                     Username Length Must Be 5-10
                   </div>
@@ -63,9 +63,9 @@
               <div class="mb-3 row align-items-center">
                 <label class="col-sm-4 col-form-label"><b>Role</b></label>
                 <div class="col-sm-8">
-                  <select class="form-select" formControlName="role">
-                    <option value="Admin" >Admin</option>
-                    <option value="User">User</option>
+                  <select class="form-select" id="roles" formControlName="roles">
+                    <option value="ADMIN" >Admin</option>
+                    <option value="USER">User</option>
                   </select>
                 </div>
               </div>

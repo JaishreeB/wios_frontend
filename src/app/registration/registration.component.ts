@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { RegisterService } from '../register.service';
  
 @Component({
   selector: 'registration',
@@ -12,15 +13,15 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 export class RegistrationComponent implements OnInit {
   registrationForm: FormGroup;
  
-  constructor(private fb: FormBuilder,private router:Router) { }
+  constructor(private fb: FormBuilder,private router:Router,private myservice:RegisterService) { }
  
   ngOnInit(): void {
     this.registrationForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
+      name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       passwordRepeat: ['', Validators.required],
-      role: ['User', Validators.required]
+      roles: ['USER', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }
  
@@ -32,9 +33,10 @@ export class RegistrationComponent implements OnInit {
  
   onSubmit(form): void {
     if (this.registrationForm.valid) {
-      localStorage.setItem("username",form.get("username").value)
-      localStorage.setItem("password",form.get("password").value)
+      // localStorage.setItem("username",form.get("username").value)
+      // localStorage.setItem("password",form.get("password").value)
       console.log('Form Submitted!', this.registrationForm.value);
+      this.myservice.registerUser(form.value).subscribe(response=>{console.log(response)});
       this.router.navigate(["/login"])
     }
   }

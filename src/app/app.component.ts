@@ -5,6 +5,7 @@ import { LandingComponent } from './landing/landing.component';
 import { FooterComponent } from './footer/footer.component';
 import { FeaturesComponent } from './features/features.component';
 import { RegistrationComponent } from './registration/registration.component';
+import { ZoneComponent } from './zone/zone.component';
 
 @Component({
   selector: 'app-root',

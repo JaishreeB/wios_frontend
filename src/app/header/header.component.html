@@ -9,7 +9,7 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="#">Zone</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/zone">Zone</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Vendor</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Stock</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Transaction</a></li>
@@ -27,7 +27,7 @@
       }
       @else{
         <li class="nav-item">
-          <a class="nav-link" href="/login" (click)="logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+          <a class="nav-link" href="/login" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Log Out</a>
         </li>
       }
       </ul>

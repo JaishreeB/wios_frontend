@@ -26,12 +26,30 @@ export class LoginComponent {
   //   }
   // }
   authLogin(form:NgForm):any{
-    console.log("logged in ................")
-    console.log(form.value)
-    this.myservice.LoginUser(form.value).subscribe(response=>{console.log("JWT"+response)});
-
+    // console.log("logged in ................")
+    // console.log(form.value)
+    // this.myservice.LoginUser(form.value).subscribe(response=>{console.log("JWT"+response);localStorage.setItem("token",response)});
+    // this.router.navigate([""])
+    // console.log("validate function calling.......");
+    // console.log(form.value);
+ 
+    this.myservice.LoginUser(form.value).subscribe({
+      next: (response) => {
+        localStorage.setItem("token",response);
+        console.log("Login successful:", response);
+        this.router.navigate([""]);
+      },
+      error: (err) => {
+        if (err.status === 403) {
+          alert("Invalid credentials. Please try again.");
+        } else {
+          alert("Something went wrong. Please try later.");
+        }
+      }
+    });
   }
 
+ 
 
 }
 
