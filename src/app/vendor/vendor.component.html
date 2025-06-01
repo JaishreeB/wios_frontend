@@ -1,0 +1,158 @@
+<h1 class="pt-5 mt-5 text-center">Vendor Details</h1>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <input
+    type="text"
+    class="form-control w-50"
+    placeholder="Search by vendor name..."
+    [(ngModel)]="searchTerm"
+    (input)="applyFilter()"
+  />
+  <button
+    *ngIf="isAdmin"
+    class="btn ms-3"
+    data-bs-toggle="modal"
+    data-bs-target="#vendorModal"
+    (click)="openCreateForm()"
+  >
+    + Add Vendor
+  </button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover table-center align-middle shadow-sm">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Vendor Name</th>
+        <th>Mobile Number</th>
+        <th>Email</th>
+        <th *ngIf="isAdmin">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let vendor of paginatedVendors">
+        <td>{{ vendor.vendorId }}</td>
+        <td>{{ vendor.vendorName }}</td>
+        <td>{{ vendor.contactInfo }}</td>
+        <td>{{ vendor.email }}</td>
+        <td *ngIf="isAdmin">
+          <button
+            class="btn btn-sm btn-warning me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#vendorModal"
+            (click)="openEditForm(vendor)"
+          >
+            Edit
+          </button>
+          <button
+            class="btn btn-sm btn-danger"
+            (click)="deleteVendor(vendor.vendorId)"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<nav *ngIf="totalPages() > 1" class="mt-3">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+    </li>
+    <li
+      class="page-item"
+      *ngFor="let page of [].constructor(totalPages()); let i = index"
+      [class.active]="currentPage === i + 1"
+    >
+      <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage === totalPages()">
+      <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+    </li>
+  </ul>
+</nav>
+
+<!-- Modal -->
+<div class="modal fade" id="vendorModal" tabindex="-1" aria-labelledby="vendorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
+      <form (ngSubmit)="saveVendor()" #vendorForm="ngForm">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="vendorModalLabel">
+            {{ isEditMode ? 'Edit Vendor' : 'Create Vendor' }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Vendor Name -->
+          <div class="mb-3">
+            <label class="form-label">Vendor Name</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="vendorName"
+              name="vendorName"
+              required
+              minlength="3"
+              maxlength="15"
+              pattern=".*\S.*"
+              #vendorNameRef="ngModel"
+            />
+            <div *ngIf="vendorNameRef.invalid && vendorNameRef.touched" class="text-danger">
+              <div *ngIf="vendorNameRef.errors?.['required']">Vendor name is required.</div>
+              <div *ngIf="vendorNameRef.errors?.['minlength']">Minimum 3 characters required.</div>
+              <div *ngIf="vendorNameRef.errors?.['maxlength']">Maximum 15 characters allowed.</div>
+              <div *ngIf="vendorNameRef.errors?.['pattern']">Vendor name cannot be blank or whitespace.</div>
+            </div>
+          </div>
+
+          <!-- Vendor Contact -->
+          <div class="mb-3">
+            <label class="form-label">Vendor Contact</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="contactInfo"
+              name="contactInfo"
+              required
+              pattern="^\d{10}$"
+              #contactInfoRef="ngModel"
+            />
+            <div *ngIf="contactInfoRef.invalid && contactInfoRef.touched" class="text-danger">
+              <div *ngIf="contactInfoRef.errors?.['required']">Contact number is required.</div>
+              <div *ngIf="contactInfoRef.errors?.['pattern']">Mobile number must be 10 digits.</div>
+            </div>
+          </div>
+
+          <!-- Vendor Email -->
+          <div class="mb-3">
+            <label class="form-label">Vendor Email</label>
+            <input
+              type="email"
+              class="form-control"
+              [(ngModel)]="email"
+              name="email"
+              required
+              #emailRef="ngModel"
+            />
+            <div *ngIf="emailRef.invalid && emailRef.touched" class="text-danger">
+              <div *ngIf="emailRef.errors?.['required']">Email is required.</div>
+              <div *ngIf="emailRef.errors?.['email']">Invalid email format.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" [disabled]="vendorForm.invalid" data-bs-dismiss="modal">
+            {{ isEditMode ? 'Update' : 'Create' }}
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

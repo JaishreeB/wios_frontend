@@ -1,0 +1,116 @@
+<!-- Search and Create Button -->
+<div class="d-flex justify-content-between align-items-center mb-4 pt-5 mt-5">
+    <input type="text" class="form-control w-50" placeholder="Search by stock name..." [(ngModel)]="searchTerm"
+        (input)="applyFilter()">
+    <ng-container *ngIf="isAdmin">
+        <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#stockModal"
+            (click)="openCreateForm()">+ Add Stock</button>
+    </ng-container>
+</div>
+
+<!-- Stock Table -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover text-center align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Zone</th>
+                <th>Vendor</th>
+                <ng-container *ngIf="isAdmin">
+                    <th>Actions</th>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let stock of paginatedStocks">
+                <td>{{ stock.stockId }}</td>
+                <td>{{ stock.stockName }}</td>
+                <td>{{ stock.stockCategory }}</td>
+                <td><span class="badge bg-info">{{ stock.stockQuantity }}</span></td>
+                <td>{{ getZoneName(stock.zoneId) }}</td>
+                <td>{{ getVendorName(stock.vendorId) }}</td>
+                <ng-container *ngIf="isAdmin">
+                    <td>
+                        <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#stockModal"
+                            (click)="openEditForm(stock)">Edit</button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteStock(stock.stockId)">Delete</button>
+                    </td>
+                </ng-container>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<nav *ngIf="totalPages() > 1" class="mt-3">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+        </li>
+        <li class="page-item" *ngFor="let page of [].constructor(totalPages()); let i = index"
+            [class.active]="currentPage === i + 1">
+            <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages()">
+            <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+        </li>
+    </ul>
+</nav>
+
+<!-- Modal for Create/Edit Stock -->
+<div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+            <form (ngSubmit)="saveStock()" #stockForm="ngForm">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="stockModalLabel">{{ isEditMode ? 'Edit Stock' : 'Create Stock' }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Stock Name</label>
+                        <input type="text" class="form-control" [(ngModel)]="stockName" name="stockName" required
+                            minlength="2" maxlength="50">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="form-control" [(ngModel)]="stockCategory" name="stockCategory"
+                            required minlength="2" maxlength="50">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quantity</label>
+                        <input type="text" class="form-control" [(ngModel)]="stockQuantity" name="stockQuantity"
+                            required min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Zone</label>
+                        <select class="form-select" [(ngModel)]="zoneId" name="zoneId" required>
+                            <option *ngFor="let zone of zoneMap.values()" [value]="zone.zoneId">
+                                {{ zone.zoneName }} (ID: {{ zone.zoneId }})
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vendor</label>
+                        <select class="form-select" [(ngModel)]="vendorId" name="vendorId" required>
+                            <option *ngFor="let vendor of vendorMap.values()" [value]="vendor.vendorId">
+                                {{ vendor.vendorName }} (ID: {{ vendor.vendorId }})
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" [disabled]="stockForm.invalid"
+                        data-bs-dismiss="modal">
+                        {{ isEditMode ? 'Update' : 'Create' }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

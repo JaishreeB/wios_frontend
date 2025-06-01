@@ -4,11 +4,15 @@ import { RegistrationComponent } from './registration/registration.component';
 import { LandingComponent } from './landing/landing.component';
 import { LoginComponent } from './login/login.component';
 import { ZoneComponent } from './zone/zone.component';
+import { VendorComponent } from './vendor/vendor.component';
+import { StockComponent } from './stock/stock.component';
 
 export const routes: Routes = [
     {path:"features", component:FeaturesComponent},
     {path:"signup",component:RegistrationComponent},
     {path:"",component:LandingComponent},
     {path:"login",component:LoginComponent},
-    {path:"zone",component:ZoneComponent}
+    {path:"zone",component:ZoneComponent},
+    {path:"vendor",component:VendorComponent},
+    {path:"stock",component:StockComponent}
 ];

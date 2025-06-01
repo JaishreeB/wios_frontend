@@ -28,7 +28,7 @@ export class ZoneService {
   }
   
    updateZone(zone: Zone): Observable<Zone> {
-   return this.client.put<Zone>(`${this.baseUrl}/update/${zone.zoneId}`, zone);
+   return this.client.put<Zone>(`${this.baseUrl}/update`, zone);
    }
   
   deleteZone(zoneId: number): Observable<void> {

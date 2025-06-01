@@ -5,7 +5,9 @@ import { LandingComponent } from './landing/landing.component';
 import { FooterComponent } from './footer/footer.component';
 import { FeaturesComponent } from './features/features.component';
 import { RegistrationComponent } from './registration/registration.component';
-import { ZoneComponent } from './zone/zone.component';
+import { CommonServiceService } from './common-service.service';
+import { LoginService } from './login.service';
+
 
 @Component({
   selector: 'app-root',
@@ -15,4 +17,10 @@ import { ZoneComponent } from './zone/zone.component';
 })
 export class AppComponent {
   title = 'wios_frontend';
+  // constructor(private commonService:CommonServiceService,private loginService:LoginService){
+  //       if(this.commonService.isTokenExpired){
+  //         alert("Your session expired,please login again!!")
+  //         this.loginService.logout();
+  //       }
+  // }
 }

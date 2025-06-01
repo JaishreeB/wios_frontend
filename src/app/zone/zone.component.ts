@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CreateZone, Zone, ZoneService } from '../zone.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CommonServiceService } from '../common-service.service';
 
 @Component({
   selector: 'zone',
@@ -21,7 +22,7 @@ export class ZoneComponent implements OnInit {
   createZone:CreateZone=new CreateZone();
   isEditMode = false;
 
-  constructor(private zoneService: ZoneService) {}
+  constructor(private zoneService: ZoneService,private commonService:CommonServiceService) {}
 
   ngOnInit(): void {
     this.loadZones();
@@ -33,6 +34,7 @@ export class ZoneComponent implements OnInit {
       this.applyFilter();
     });
   }
+
 
   applyFilter(): void {
     this.filteredZones = this.zones.filter(zone =>
@@ -54,6 +56,40 @@ export class ZoneComponent implements OnInit {
     this.currentPage = page;
   }
 
+  get zoneName(): string {
+    return this.isEditMode ? this.selectedZone.zoneName : this.createZone.zoneName;
+  }
+  set zoneName(value: string) {
+    if (this.isEditMode) {
+      this.selectedZone.zoneName = value;
+    } else {
+      this.createZone.zoneName = value;
+    }
+  }
+  
+  get zoneCapacity(): number {
+    return this.isEditMode ? this.selectedZone.zoneCapacity : this.createZone.zoneCapacity;
+  }
+  set zoneCapacity(value: number) {
+    if (this.isEditMode) {
+      this.selectedZone.zoneCapacity = value;
+    } else {
+      this.createZone.zoneCapacity = value;
+    }
+  }
+  
+  get availableSpace(): number {
+    return this.isEditMode ? this.selectedZone.availableSpace : this.createZone.availableSpace;
+  }
+  set availableSpace(value: number) {
+    if (this.isEditMode) {
+      this.selectedZone.availableSpace = value;
+    } else {
+      this.createZone.availableSpace = value;
+    }
+  }
+  
+
   openCreateForm(): void {
     console.log("from function open create form......")
     this.createZone = new CreateZone();
@@ -68,15 +104,23 @@ export class ZoneComponent implements OnInit {
   saveZone(): void {
     if (this.isEditMode) {
       this.zoneService.updateZone(this.selectedZone).subscribe(() =>response=>{console.log(response);this.loadZones()});
+      window.location.reload();
     } else {
       console.log("from saveZone....",this.createZone)
       this.zoneService.createZone(this.createZone).subscribe(() => this.loadZones());
+      window.location.reload();
     }
   }
 
   deleteZone(zoneId: number): void {
     if (confirm('Are you sure you want to delete this zone?')) {
       this.zoneService.deleteZone(zoneId).subscribe(() => this.loadZones());
+      window.location.reload();
+    }
+  }
+  get isAdmin():boolean{
+    if(this.commonService.getUserRole()=="ADMIN"){
+      return true;
     }
   }
 }
