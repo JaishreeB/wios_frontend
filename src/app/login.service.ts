@@ -13,11 +13,14 @@ export class LoginService {
   constructor(private client:HttpClient,private router:Router,private commonService:CommonServiceService) { }
   public LoginUser(loginUser: LoginUser) {
     console.log("ins service add");
-    console.log(loginUser);
+    console.log(loginUser.name);
     console.log()
     return this.client.post(this.path, loginUser,{responseType:'text'}).pipe(
       tap(()=>{
+        localStorage.setItem("username",loginUser.name)
+        console.log("username setted in local storage",loginUser.name)
         this.isLoggedIn=true
+        
     }));  
   }
   isLoggedIn:boolean=false

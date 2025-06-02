@@ -24,10 +24,12 @@ export class LoginComponent {
 
     this.myservice.LoginUser(form.value).subscribe({
       next: (response) => {
+        localStorage.setItem("username",form.value.username)
         localStorage.setItem("token", response);
+        
         console.log("Login successful:", response);
         this.router.navigate([""]);
-
+        
         this.commonService.startTokenTimer();
       },
       error: (err) => {
