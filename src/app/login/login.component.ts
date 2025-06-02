@@ -17,16 +17,16 @@ export class LoginComponent {
   authLogin(form: NgForm): any {
     // console.log("logged in ................")
     // console.log(form.value)
-    // this.myservice.LoginUser(form.value).subscribe(response=>{console.log("JWT"+response);localStorage.setItem("token",response)});
+    // this.myservice.LoginUser(form.value).subscribe(response=>{console.log("JWT"+response);sessionStorage.setItem("token",response)});
     // this.router.navigate([""])
     // console.log("validate function calling.......");
     // console.log(form.value);
 
     this.myservice.LoginUser(form.value).subscribe({
       next: (response) => {
-        localStorage.setItem("username",form.value.username)
-        localStorage.setItem("token", response);
-        
+        sessionStorage.setItem("username",form.value.username)
+        sessionStorage.setItem("token", response);
+        1
         console.log("Login successful:", response);
         this.router.navigate([""]);
         

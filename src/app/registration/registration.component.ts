@@ -33,8 +33,8 @@ export class RegistrationComponent implements OnInit {
  
   onSubmit(form): void {
     if (this.registrationForm.valid) {
-      // localStorage.setItem("username",form.get("username").value)
-      // localStorage.setItem("password",form.get("password").value)
+      // sessionStorage.setItem("username",form.get("username").value)
+      // sessionStorage.setItem("password",form.get("password").value)
       console.log('Form Submitted!', this.registrationForm.value);
       this.myservice.registerUser(form.value).subscribe(response=>{console.log(response)});
       this.router.navigate(["/login"])

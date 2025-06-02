@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MetricsService, PerformanceMetric } from '../metrics.service';
@@ -13,8 +13,9 @@ Chart.register(...registerables);
   templateUrl: './metrics.component.html',
   styleUrl: './metrics.component.css'
 })
-export class MetricsComponent implements OnInit {
-  @ViewChild('metricsCanvas') metricsCanvas!: ElementRef<HTMLCanvasElement>;
+export class MetricsComponent implements OnInit,AfterViewInit {
+  @ViewChild('metricsCanvas') metricsCanvas: ElementRef<HTMLCanvasElement>;
+
 
   metrics: PerformanceMetric[] = [];
   filteredMetrics: PerformanceMetric[] = [];
@@ -31,13 +32,22 @@ export class MetricsComponent implements OnInit {
   chart: any;
 
   constructor(
+ 
     private metricsService: MetricsService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    console.log("inside metrix constructor:",this.metricsCanvas)
+  }
 
   ngOnInit(): void {
     this.loadMetrics();
+
   }
+  
+    ngAfterViewInit() {
+    console.log("inside metrix After:",this.metricsCanvas)
+      }
+    
 
   loadMetrics(): void {
     this.loading = true;
@@ -83,7 +93,7 @@ export class MetricsComponent implements OnInit {
   renderChart(): void {
     const canvas = this.metricsCanvas?.nativeElement;
     if (!canvas) {
-      console.error('Canvas element not found');
+     console.error('Canvas element not found');
       return;
     }
 

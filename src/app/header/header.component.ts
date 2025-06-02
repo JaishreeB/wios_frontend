@@ -19,7 +19,7 @@ import { MetricsComponent } from '../metrics/metrics.component';
 export class HeaderComponent {
   constructor(private loginService:LoginService,private commonService:CommonServiceService){}
   logout(){
-    localStorage.clear() 
+    sessionStorage.clear() 
     return this.loginService.logout();
    }
  

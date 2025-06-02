@@ -9,6 +9,7 @@ import { CommonServiceService } from './common-service.service';
 import { LoginService } from './login.service';
 
 
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet,HeaderComponent,LandingComponent,FooterComponent,FeaturesComponent,RegistrationComponent,RouterLink],

@@ -36,7 +36,8 @@
   
     <!-- Chart -->
     <div *ngIf="!loading && metrics.length">
-      <canvas id="metricsChart" height="100"></canvas>
+      <!-- <canvas id="metricsChart" height="100"></canvas> -->
+      <canvas #metricsCanvas height="100"></canvas>
     </div>
   
     <!-- Metrics Table -->

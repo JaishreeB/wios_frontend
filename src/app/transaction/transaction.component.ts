@@ -122,7 +122,7 @@ export class TransactionComponent implements OnInit {
 
   openCreateForm(): void {
     this.createTransaction = new CreateTransaction();
-    this.transactionService.getUserByName(localStorage.getItem("username")).subscribe(id => {
+    this.transactionService.getUserByName(sessionStorage.getItem("username")).subscribe(id => {
       this.createTransaction.userId = id; // ✅ Now it's a number
     });
 
@@ -149,7 +149,7 @@ export class TransactionComponent implements OnInit {
   }
 
   getUserName(): string {
-    return localStorage.getItem("username")
+    return sessionStorage.getItem("username")
   }
 
   getZoneName(zoneId: number): string {

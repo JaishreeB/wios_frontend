@@ -75,7 +75,6 @@ export class TransactionService {
     return this.http.get<number>(`${this.userUrl}/getUserId/${userName}`);
   }
 
-
   getAllZones(): Observable<Zone[]> {
     return this.http.get<Zone[]>(`${this.zoneUrl}/fetchAll`);
   }

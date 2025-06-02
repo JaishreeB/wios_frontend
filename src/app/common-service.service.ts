@@ -13,7 +13,7 @@ export class CommonServiceService {
   private tokenTimer: any;
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   }
 
   getTokenPayload(): any | null {
@@ -53,7 +53,7 @@ export class CommonServiceService {
     if (expiresIn > 0) {
       this.tokenTimer = setTimeout(() => {
         alert('Session expired. Please login again.');
-        localStorage.clear()
+        sessionStorage.clear()
         this.router.navigate(['/login']);
       }, expiresIn);
     }

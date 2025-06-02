@@ -17,24 +17,21 @@ export class LoginService {
     console.log()
     return this.client.post(this.path, loginUser,{responseType:'text'}).pipe(
       tap(()=>{
-        localStorage.setItem("username",loginUser.name)
+        sessionStorage.setItem("username",loginUser.name)
         console.log("username setted in local storage",loginUser.name)
         this.isLoggedIn=true
-        
     }));  
   }
   isLoggedIn:boolean=false
 
   logout():boolean{
-
     this.isLoggedIn=false
-    localStorage.clear()
+    sessionStorage.clear()
     this.router.navigate(["/login"])
     this.commonService.clearTokenTimer();
     return this.isLoggedIn
   }
 
- 
   getLoginStatus(): boolean{
     return this.isLoggedIn;
   }
