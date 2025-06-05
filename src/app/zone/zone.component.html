@@ -1,4 +1,4 @@
-
+<!-- 
 <div class="d-flex justify-content-between align-items-center mb-4 pt-5 mt-5">
   <input type="text" class="form-control w-50" placeholder="Search by zone name..." [(ngModel)]="searchTerm" (input)="applyFilter()">
   @if(isAdmin){
@@ -94,6 +94,110 @@
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         </div>
       </form>
+    </div>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+<!-- zone.component.html -->
+<div class="container py-5 zone-container mt-5 pt-4">
+  <!-- Header with Search and Add Button -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <input type="text" class="form-control w-50" placeholder="Search by zone name..." [(ngModel)]="searchTerm" (input)="applyFilter()">
+    @if(isAdmin){
+      <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#zoneModal" (click)="openCreateForm()">
+        <i class="fas fa-plus-circle me-1"></i> Add Zone
+      </button>
+    }
+  </div>
+
+  <!-- Zone Cards -->
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4" *ngFor="let zone of paginatedZones">
+      <div class="card zone-card h-100 animate-fade-in">
+        <div class="card-body position-relative">
+          @if(isAdmin){
+          <div class="position-absolute top-0 end-0 p-2">
+            <button class="btn btn-sm btn-outline-warning me-1" data-bs-toggle="tooltip" title="Edit" (click)="openEditForm(zone)" data-bs-toggle="modal" data-bs-target="#zoneModal">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete" (click)="deleteZone(zone.zoneId)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+          }
+          <h5 class="card-title">{{ zone.zoneName }}</h5>
+          <span class="badge bg-secondary mb-2">ID: {{ zone.zoneId }}</span>
+          <p class="mb-1"><strong>Capacity:</strong> {{ zone.zoneCapacity }}</p>
+          <p class="mb-3"><strong>Available:</strong> {{ zone.availableSpace }}</p>
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar fw-semibold text-dark" role="progressbar"
+                 [style.width.%]="(zone.zoneCapacity - zone.availableSpace) / zone.zoneCapacity * 100"
+                 [ngClass]="{
+                   'bg-success': (zone.zoneCapacity - zone.availableSpace) / zone.zoneCapacity < 0.5,
+                   'bg-warning': (zone.zoneCapacity - zone.availableSpace) / zone.zoneCapacity >= 0.5 && (zone.zoneCapacity - zone.availableSpace) / zone.zoneCapacity < 0.8,
+                   'bg-danger': (zone.zoneCapacity - zone.availableSpace) / zone.zoneCapacity >= 0.8
+                 }">
+              {{ ((zone.zoneCapacity - zone.availableSpace) / zone.zoneCapacity * 100) | number:'1.0-0' }}%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="totalPages() > 1" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+      </li>
+      <li class="page-item" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage === i + 1">
+        <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages()">
+        <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Modal -->
+  <div class="modal fade" id="zoneModal" tabindex="-1" aria-labelledby="zoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content zone-modal">
+        <form (ngSubmit)="saveZone()" #zoneForm="ngForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="zoneModalLabel">{{ isEditMode ? 'Edit Zone' : 'Create Zone' }}</h5>
+            <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Zone Name</label>
+              <input type="text" class="form-control" [(ngModel)]="zoneName" name="zoneName" required minlength="3" maxlength="20">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Zone Capacity</label>
+              <input type="number" class="form-control" [(ngModel)]="zoneCapacity" name="zoneCapacity" required min="1">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Available Space</label>
+              <input type="number" class="form-control" [(ngModel)]="availableSpace" name="availableSpace" required min="0" [max]="selectedZone.zoneCapacity">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success" [disabled]="zoneForm.invalid" data-bs-dismiss="modal">
+              {{ isEditMode ? 'Update' : 'Create' }}
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

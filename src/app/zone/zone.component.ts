@@ -16,7 +16,7 @@ export class ZoneComponent implements OnInit {
   filteredZones: Zone[] = [];
   searchTerm = '';
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 6;
 
   selectedZone: Zone = new Zone();
   createZone:CreateZone=new CreateZone();

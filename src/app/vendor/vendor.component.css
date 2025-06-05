@@ -1,6 +1,10 @@
 .text-purple {
     color: #7e407d;
   }
+
+  .vendor-container {
+    background-color: #f8f9fa ;
+  }
   
   .bg-purple {
     background-color: #2E003E;
@@ -18,10 +22,10 @@
   }
   .btn-white:hover {
     /* background-color: #c95cc4; */
-    color: #fff;
+    color: #c95cc4;
   }
   
-  .vendor-card {
+  /* .vendor-card {
     background-color: #d1afe9;
     color: #171414;
     border-radius: 10px;
@@ -32,7 +36,18 @@
     transform: translateY(-5px);
     box-shadow: 0 0 15px rgba(218, 112, 214, 0.4);
   }
+   */
+   .vendor-card {
+    background-color: #fff;
+    border-left: 5px solid #D470D6;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
   
+  .vendor-card:hover {
+    transform: scale(1.02);
+    /* transform: translateY(-5px); */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
   .vendor-modal {
     border-radius: 10px;
     background-color: #cbacd6;
