@@ -15,12 +15,6 @@ export class LoginComponent {
   constructor(private myservice: LoginService, private router: Router, private commonService: CommonServiceService) { }
   
   authLogin(form: NgForm): any {
-    // console.log("logged in ................")
-    // console.log(form.value)
-    // this.myservice.LoginUser(form.value).subscribe(response=>{console.log("JWT"+response);sessionStorage.setItem("token",response)});
-    // this.router.navigate([""])
-    // console.log("validate function calling.......");
-    // console.log(form.value);
 
     this.myservice.LoginUser(form.value).subscribe({
       next: (response) => {
@@ -41,8 +35,6 @@ export class LoginComponent {
       }
     });
   }
-
-
 
 }
 

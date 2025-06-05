@@ -89,7 +89,7 @@
                     <div class="mb-3">
                         <label class="form-label">Zone</label>
                         <select class="form-select" [(ngModel)]="zoneId" name="zoneId" required>
-                            <option *ngFor="let zone of zoneMap.values()" [value]="zone.zoneId">
+                            <option *ngFor="let zone of zoneList" [value]="zone.zoneId">
                                 {{ zone.zoneName }} (ID: {{ zone.zoneId }})
                             </option>
                         </select>
@@ -97,7 +97,7 @@
                     <div class="mb-3">
                         <label class="form-label">Vendor</label>
                         <select class="form-select" [(ngModel)]="vendorId" name="vendorId" required>
-                            <option *ngFor="let vendor of vendorMap.values()" [value]="vendor.vendorId">
+                            <option *ngFor="let vendor of vendorList" [value]="vendor.vendorId">
                                 {{ vendor.vendorName }} (ID: {{ vendor.vendorId }})
                             </option>
                         </select>

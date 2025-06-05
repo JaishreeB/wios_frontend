@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class ZoneService {
 
+
   
   private baseUrl = 'http://localhost:9090/zone';
 
@@ -34,7 +35,9 @@ export class ZoneService {
   deleteZone(zoneId: number): Observable<void> {
    return this.client.delete<void>(`${this.baseUrl}/delete/${zoneId}`);
    }
-  
+   getZoneById(stockId: number): Observable<Zone> {
+      return this.client.get<Zone>(`${this.baseUrl}/fetchById/${stockId}`);
+    }
 }
 export class Zone{
     zoneId:number;

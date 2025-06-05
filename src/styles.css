@@ -1,1 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+
+table thead.custom-header {
+  background-color: #DA70D6 !important;
+  color: white !important;
+}

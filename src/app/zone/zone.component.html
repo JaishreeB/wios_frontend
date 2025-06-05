@@ -1,4 +1,4 @@
-<!-- Search and Create Button -->
+
 <div class="d-flex justify-content-between align-items-center mb-4 pt-5 mt-5">
   <input type="text" class="form-control w-50" placeholder="Search by zone name..." [(ngModel)]="searchTerm" (input)="applyFilter()">
   @if(isAdmin){
@@ -6,7 +6,6 @@
   }
 </div>
 
-<!-- Zone Table -->
 <div class="table-responsive">
   <table class="table table-bordered table-hover text-center align-middle shadow-sm">
     <thead class="table-dark">
@@ -51,7 +50,6 @@
   </table>
 </div>
 
-<!-- Pagination -->
 <nav *ngIf="totalPages() > 1" class="mt-3">
   <ul class="pagination justify-content-center">
     <li class="page-item" [class.disabled]="currentPage === 1">

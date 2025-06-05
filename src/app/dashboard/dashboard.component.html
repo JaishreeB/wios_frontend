@@ -1,0 +1,67 @@
+<div class="container mt-4 pt-5">
+    <!-- Summary Cards -->
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card text-white bg-primary">
+          <div class="card-body">
+            <h5 class="card-title">Total Stocks</h5>
+            <p class="card-text fs-3">{{ totalStocks }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white bg-success">
+          <div class="card-body">
+            <h5 class="card-title">Total Zones</h5>
+            <p class="card-text fs-3">{{ totalZones }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white bg-warning">
+          <div class="card-body">
+            <h5 class="card-title">Turnover Rate</h5>
+            <p class="card-text fs-3">{{ turnoverRate | number:'1.1-2' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Charts -->
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <h5 class="mb-3">Stock by Category</h5>
+        <canvas #categoryChartCanvas class="w-100" height="300"></canvas>
+      </div>
+      <div class="col-md-6">
+        <h5 class="mb-3">Zone Utilization</h5>
+        <canvas #zoneChartCanvas class="w-100" height="300"></canvas>
+      </div>
+    </div>
+  
+    <!-- Recent Transactions -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <h5 class="mb-3">Recent Transactions</h5>
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Transaction ID</th>
+              <th>Stock</th>
+              <th>Zone</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let txn of recentTransactions">
+              <td>{{ txn.transactionId }}</td>
+              <td>{{ txn.stockId }} - {{ txn.stockName }}</td>
+              <td>{{ txn.zoneId }} - {{ txn.zoneName }}</td>
+              <td>{{ txn.date | date:'short' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

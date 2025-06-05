@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonServiceService } from '../common-service.service';
 import { StockService, Stock, CreateStock, Vendor, Zone } from '../stock.service';
@@ -25,21 +25,26 @@ export class StockComponent implements OnInit {
   selectedStock: Stock = new Stock();
   createStock: CreateStock = new CreateStock();
   isEditMode = false;
- 
+
 
   constructor(
     private stockService: StockService,
-    private commonService: CommonServiceService
-  ) {}
+    private commonService: CommonServiceService,
+
+    private cdRef: ChangeDetectorRef
+
+  ) { }
 
   ngOnInit(): void {
     this.loadAllStocks();
     this.stockService.getAllZones().subscribe(zones => {
       zones.forEach(zone => this.zoneMap.set(zone.zoneId, zone));
+      this.cdRef.detectChanges(); // Trigger change detection after async update
     });
 
     this.stockService.getAllVendors().subscribe(vendors => {
       vendors.forEach(vendor => this.vendorMap.set(vendor.vendorId, vendor));
+      this.cdRef.detectChanges(); // Trigger change detection after async update
     });
   }
 
@@ -66,7 +71,7 @@ export class StockComponent implements OnInit {
     });
   }
 
-  
+
   applyFilter(): void {
     this.filteredStocks = this.stocks.filter(stock =>
       stock.stockName.toLowerCase().includes(this.searchTerm.toLowerCase())
@@ -121,7 +126,15 @@ export class StockComponent implements OnInit {
   set vendorId(value: number) {
     this.isEditMode ? this.selectedStock.vendorId = value : this.createStock.vendorId = value;
   }
-
+  
+  get vendorList(): Vendor[] {
+     return Array.from(this.vendorMap.values());
+  }
+  
+  get zoneList(): Zone[] {
+     return Array.from(this.zoneMap.values());
+  }
+  
   openCreateForm(): void {
     this.createStock = new CreateStock();
     this.isEditMode = false;
@@ -138,13 +151,13 @@ export class StockComponent implements OnInit {
     } else {
       this.stockService.createStock(this.createStock).subscribe(() => this.loadAllStocks());
     }
-    window.location.reload();
+    // window.location.reload();
   }
 
   deleteStock(stockId: number): void {
     if (confirm('Are you sure you want to delete this stock?')) {
       this.stockService.deleteStock(stockId).subscribe(() => this.loadAllStocks());
-      window.location.reload();
+      // window.location.reload();
     }
   }
 

@@ -44,9 +44,9 @@ export class MetricsComponent implements OnInit,AfterViewInit {
 
   }
   
-    ngAfterViewInit() {
+   ngAfterViewInit() {
     console.log("inside metrix After:",this.metricsCanvas)
-      }
+  }
     
 
   loadMetrics(): void {

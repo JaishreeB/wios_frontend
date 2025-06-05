@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 
 export class Transaction {
   transactionId!: number;
@@ -48,7 +48,7 @@ export class TransactionService {
   private userUrl = 'http://localhost:9090/auth';
   private zoneUrl = 'http://localhost:9090/zone';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Transaction CRUD
   getAllTransactions(): Observable<Transaction[]> {
@@ -68,8 +68,15 @@ export class TransactionService {
     return this.http.get<Stock[]>(`${this.stockUrl}/fetchAll`);
   }
 
-  getStockById(stockId: number): Observable<Stock> {
-    return this.http.get<Stock>(`${this.stockUrl}/get/${stockId}`);
+  getStockById(stockId: number): Observable<Stock|any> {
+    return this.http.get<Stock>(`${this.stockUrl}/fetchById/${stockId}`).pipe(
+      catchError(error => {
+        if (error.status === 404 || error.status === 406) {
+          return of(stockId); // Wrap stockId in an observable
+        }
+        throw error; // Rethrow other errors
+      })
+    );
   }
   getUserByName(userName: string): Observable<number> {
     return this.http.get<number>(`${this.userUrl}/getUserId/${userName}`);
@@ -79,7 +86,14 @@ export class TransactionService {
     return this.http.get<Zone[]>(`${this.zoneUrl}/fetchAll`);
   }
 
-  getZoneById(zoneId: number): Observable<Zone> {
-    return this.http.get<Zone>(`${this.zoneUrl}/get/${zoneId}`);
+  getZoneById(zoneId: number): Observable<Zone | any> {
+    return this.http.get<Zone>(`${this.zoneUrl}/fetchById/${zoneId}`).pipe(
+      catchError(error => {
+        if (error.status === 404 || error.status === 406) {
+          return of(zoneId); // Return null if stock not found
+        }
+        throw error; // Rethrow other errors
+      })
+    );
   }
 }

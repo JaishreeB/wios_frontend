@@ -38,6 +38,7 @@ export class Zone {
 })
 export class StockService {
 
+
   private baseUrl = 'http://localhost:9090/stock';
   private vendorUrl = 'http://localhost:9090/vendors';
   private zoneUrl = 'http://localhost:9090/zone';
@@ -61,11 +62,11 @@ export class StockService {
   }
 
   getVendorById(vendorId: number): Observable<Vendor> {
-    return this.http.get<Vendor>(`${this.vendorUrl}/get/${vendorId}`);
+    return this.http.get<Vendor>(`${this.vendorUrl}/fetchById/${vendorId}`);
   }
 
   getZoneById(zoneId: number): Observable<Zone> {
-    return this.http.get<Zone>(`${this.zoneUrl}/get/${zoneId}`);
+    return this.http.get<Zone>(`${this.zoneUrl}/fetchById/${zoneId}`);
   }
   getAllZones(): Observable<Zone[]> {
     return this.http.get<Zone[]>(`${this.zoneUrl}/fetchAll`);
@@ -82,6 +83,9 @@ export class StockService {
     return this.http.get<Stock[]>(`${this.baseUrl}/fetchZone/${zoneId}`);
   }
   
+  getStockById(stockId: number): Observable<Stock> {
+    return this.http.get<Stock>(`${this.baseUrl}/fetchById/${stockId}`);
+  }
   getStocksByVendor(vendorId: number): Observable<Stock[]> {
     return this.http.get<Stock[]>(`${this.baseUrl}/fetchVendor/${vendorId}`);
   }
