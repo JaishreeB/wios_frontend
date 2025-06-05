@@ -16,7 +16,7 @@ export class VendorComponent implements OnInit {
   filteredVendors: Vendor[] = [];
   searchTerm = '';
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 6;
 
   selectedVendor: Vendor = new Vendor();
   createVendor: CreateVendor = new CreateVendor();

@@ -1,0 +1,45 @@
+.text-purple {
+    color: #7e407d;
+  }
+
+  .stock-container {
+    background-color: #f8f9fa ;
+  }
+  
+  .bg-purple {
+    background-color: #2E003E;
+  }
+  
+  .btn-purple {
+    background-color: #DA70D6;
+    color: #2E003E;
+    font-weight: bold;
+  }
+  
+  .btn-purple:hover {
+    background-color: #c95cc4;
+    color: #fff;
+  }
+  .btn-white:hover {
+    /* background-color: #c95cc4; */
+    color: #c95cc4;
+  }
+  
+
+   .stock-card {
+    background-color: #fff;
+    border-left: 5px solid #D470D6;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .stock-card:hover {
+    transform: scale(1.02);
+    /* transform: translateY(-5px); */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  .stock-modal {
+    border-radius: 10px;
+    background-color: #cbacd6;
+    color: #130d0d;
+  }
+  

@@ -1,0 +1,7 @@
+.card {
+    border-radius: 0.5rem;
+}
+
+canvas {
+    max-width: 100%;
+}

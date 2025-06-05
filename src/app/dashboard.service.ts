@@ -1,34 +1,41 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
-import { Stock, StockService } from './stock.service';
-import { Zone, ZoneService } from './zone.service';
-import { MetricsService, PerformanceMetric } from './metrics.service';
-import { Transaction, TransactionService } from './transaction.service';
- // Adjust paths as needed
+import { forkJoin, map } from 'rxjs';
+import { StockService } from './stock.service';
+import { ZoneService } from './zone.service';
+import { MetricsService } from './metrics.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-
   constructor(
-    private stockService: StockService,
-    private zoneService: ZoneService,
-    private metricsService: MetricsService,
-    private transactionService: TransactionService
+    public stockService: StockService,
+    public zoneService: ZoneService,
+    public metricsService: MetricsService
   ) {}
 
-  getDashboardData(): Observable<{
-    stocks: Stock[],
-    zones: Zone[],
-    metrics: PerformanceMetric[],
-    transactions: Transaction[]
-  }> {
+  getDashboardData() {
     return forkJoin({
       stocks: this.stockService.getAllStocks(),
-      zones: this.zoneService.getAllZones(),
-      metrics: this.metricsService.getMetricsByType('Turnover'),
-      transactions: this.transactionService.getAllTransactions()
+      zones: this.zoneService.getAllZones()
     });
+  }
+
+  getRecentMetrics() {
+    return forkJoin({
+      turnover: this.metricsService.getMetricsByType('Turnover'),
+      spaceUtilization: this.metricsService.getMetricsByType('Space Utilization')
+    }).pipe(
+      map(({ turnover, spaceUtilization }) => ({
+        turnover: turnover
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+          .slice(0, 5)
+          .reverse(),
+        spaceUtilization: spaceUtilization
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+          .slice(0, 5)
+          .reverse()
+      }))
+    );
   }
 }

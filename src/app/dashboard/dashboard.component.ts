@@ -1,15 +1,12 @@
 import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  ChangeDetectorRef
+  Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
-import { Stock, StockService } from '../stock.service';
-import { Zone, ZoneService } from '../zone.service';
 import { DashboardService } from '../dashboard.service';
+import { Stock } from '../stock.service';
+import { Zone } from '../zone.service';
+import { PerformanceMetric } from '../metrics.service';
+import { CommonModule } from '@angular/common';
 
 Chart.register(...registerables);
 
@@ -21,104 +18,145 @@ Chart.register(...registerables);
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  @ViewChild('turnoverChartCanvas') turnoverChartCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('spaceUtilChartCanvas') spaceUtilChartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('categoryChartCanvas') categoryChartCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('zoneChartCanvas') zoneChartCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('spaceBreakdownChartCanvas') spaceBreakdownChartCanvas!: ElementRef<HTMLCanvasElement>;
 
+  totalCapacity = 0;
+  availableSpace = 0;
+  occupiedSpace = 0;
   totalStocks = 0;
   totalZones = 0;
-  turnoverRate = 0;
-  recentTransactions: any[] = [];
 
-  categoryChart: any;
-  zoneChart: any;
+  turnoverChart?: Chart;
+  spaceUtilChart?: Chart;
+  categoryChart?: Chart;
 
   constructor(
     private dashboardService: DashboardService,
-    private stockService: StockService,
-    private zoneService: ZoneService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.dashboardService.getDashboardData().subscribe(data => {
-      this.totalStocks = data.stocks.length;
-      this.totalZones = data.zones.length;
-      this.turnoverRate = data.metrics[0]?.value || 0;
+    this.dashboardService.getDashboardData().subscribe({
+      next: data => {
+        this.totalStocks = data.stocks?.length || 0;
+        this.totalZones = data.zones?.length || 0;
+        this.totalCapacity = data.zones.reduce((sum, z) => sum + z.zoneCapacity, 0);
+        this.availableSpace = data.zones.reduce((sum, z) => sum + z.availableSpace, 0);
+        this.occupiedSpace = this.totalCapacity - this.availableSpace;
 
-      this.enrichTransactions(data.transactions);
-      this.cdr.detectChanges(); // Ensure canvas is ready
-      console.log("stocks fetched for category.......",data.stocks)
-      this.renderCategoryChart(data.stocks);
-      this.renderZoneChart(data.zones);
+        this.cdr.detectChanges();
+        this.renderCategoryChart(data.stocks);
+
+        this.renderSpaceBreakdownChart();
+
+      },
+      error: err => {
+        console.error('Error fetching dashboard data:', err);
+      }
+    });
+
+    this.dashboardService.getRecentMetrics().subscribe({
+      next: metrics => {
+        this.renderTurnoverChart(metrics.turnover);
+        this.renderSpaceUtilizationChart(metrics.spaceUtilization);
+      },
+      error: err => {
+        console.error('Error fetching metrics:', err);
+      }
     });
   }
 
-  renderCategoryChart(stocks: any[]) {
-    const grouped = stocks.reduce((acc, stock) => {
-      const category = stock.stockCategory || 'Uncategorized';
-      acc[category] = (acc[category] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-  
-    const labels = Object.keys(grouped);
-    const data = Object.values(grouped);
-  
-    // Define category-specific colors
-    const categoryColors: Record<string, string> = {
-      Electronics: '#0d6efd',
-      Furniture: '#198754',
-      Clothing: '#ffc107',
-      Food: '#dc3545',
-      Uncategorized: '#6c757d'
-    };
-  
-    // Assign colors based on category or fallback
-    const backgroundColors = labels.map(label => categoryColors[label] || this.getRandomColor());
-  
-    const ctx = this.categoryChartCanvas.nativeElement.getContext('2d');
-    if (this.categoryChart) this.categoryChart.destroy();
-  
-    this.categoryChart = new Chart(ctx!, {
-      type: 'bar',
+  renderTurnoverChart(metrics: PerformanceMetric[]) {
+    const ctx = this.turnoverChartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+    if (this.turnoverChart) this.turnoverChart.destroy();
+
+    const labels = metrics.map(m => new Date(m.timestamp).toLocaleString());
+    const values = metrics.map(m => m.value);
+
+    this.turnoverChart = new Chart(ctx, {
+      type: 'line',
       data: {
         labels,
         datasets: [{
-          label: 'Stock by Category',
-          data,
-          backgroundColor: backgroundColors
+          label: 'Turnover (Last 5)',
+          data: values,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          fill: true,
+          tension: 0.3
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          title: { display: true, text: 'Stock by Category' },
-          legend: { display: false }
+          title: { display: true, text: 'Turnover (Last 5 Records)' }
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: 'Stock Count' }
-          }
+          x: { title: { display: true, text: 'Timestamp' } },
+          y: { title: { display: true, text: 'Value' } }
         }
       }
     });
   }
-  
 
-  renderZoneChart(zones: any[]) {
-    const labels = zones.map(z => z.zoneName);
-    const data = zones.map(z => z.zoneCapacity - z.availableSpace);
-    const colors = labels.map(() => this.getRandomColor());
+  renderSpaceUtilizationChart(metrics: PerformanceMetric[]) {
+    const ctx = this.spaceUtilChartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+    if (this.spaceUtilChart) this.spaceUtilChart.destroy();
 
-    const ctx = this.zoneChartCanvas.nativeElement.getContext('2d');
-    if (this.zoneChart) this.zoneChart.destroy();
+    const labels = metrics.map(m => new Date(m.timestamp).toLocaleString());
+    const values = metrics.map(m => m.value);
 
-    this.zoneChart = new Chart(ctx!, {
-      type: 'bar',
+    this.spaceUtilChart = new Chart(ctx, {
+      type: 'line',
       data: {
         labels,
         datasets: [{
-          label: 'Used Space',
+          label: 'Space Utilization (Last 5)',
+          data: values,
+          borderColor: 'rgba(40, 167, 69, 1)',
+          backgroundColor: 'rgba(40, 167, 69, 0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Space Utilization (Last 5 Records)' }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Timestamp' } },
+          y: { title: { display: true, text: 'Value' } }
+        }
+      }
+    });
+  }
+
+  renderCategoryChart(stocks: Stock[]) {
+    const grouped = stocks.reduce((acc: Record<string, number>, stock) => {
+      const category = stock.stockCategory || 'Uncategorized';
+      acc[category] = (acc[category] || 0) + stock.stockQuantity;
+      return acc;
+    }, {});
+
+    const labels = Object.keys(grouped);
+    const data = Object.values(grouped);
+    const colors = labels.map(() => this.getRandomColor());
+
+    const ctx = this.categoryChartCanvas.nativeElement.getContext('2d');
+    if (this.categoryChart) this.categoryChart.destroy();
+
+    this.categoryChart = new Chart(ctx!, {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Stock Quantity by Category',
           data,
           backgroundColor: colors
         }]
@@ -126,39 +164,25 @@ export class DashboardComponent implements OnInit {
       options: {
         responsive: true,
         plugins: {
-          title: { display: true, text: 'Zone Utilization' }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: 'Used Capacity' }
+          title: {
+            display: true,
+            text: 'Stock Quantity by Category'
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const label = context.label || '';
+                const value = context.raw as number;
+                return `${label}: ${value}`;
+              }
+            }
           }
         }
       }
     });
   }
 
-  enrichTransactions(transactions: any[]) {
-    const enriched: any[] = [];
 
-    transactions.slice(0, 5).forEach(txn => {
-      const enrichedTxn: any = { ...txn };
-
-      this.stockService.getStockById(txn.stockId).subscribe(stock => {
-        enrichedTxn.stockName = stock.stockName;
-        this.zoneService.getZoneById(txn.zoneId).subscribe(zone => {
-          enrichedTxn.zoneName = zone.zoneName;
-          enrichedTxn.date = txn.timestamp || new Date(); // fallback if date missing
-          enriched.push(enrichedTxn);
-        });
-      });
-    });
-
-    // Delay assignment to allow async calls to complete
-    setTimeout(() => {
-      this.recentTransactions = enriched;
-    }, 500);
-  }
 
   getRandomColor(): string {
     const r = Math.floor(Math.random() * 200);
@@ -166,5 +190,32 @@ export class DashboardComponent implements OnInit {
     const b = Math.floor(Math.random() * 200);
     return `rgba(${r}, ${g}, ${b}, 0.7)`;
   }
-}
- 
+  renderSpaceBreakdownChart() {
+    const ctx = this.spaceBreakdownChartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    const data = [this.occupiedSpace, this.availableSpace];
+    const labels = ['Occupied Space', 'Available Space'];
+    const colors = ['#ff6384', '#36a2eb'];
+
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          backgroundColor: colors
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Space Breakdown'
+          }
+        }
+      }
+    });
+  }
+}  
