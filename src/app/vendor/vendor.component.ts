@@ -3,6 +3,7 @@ import { CommonServiceService } from '../common-service.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CreateVendor, Vendor, VendorService } from '../vendor.service';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-vendor',

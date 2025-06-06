@@ -1,123 +1,138 @@
 <p>transaction works!</p>
 <!-- Search and Create Button -->
 <div class="d-flex justify-content-between align-items-center mb-4 pt-5 mt-5">
-    <input type="text" class="form-control w-50" placeholder="Search by stock name..." [(ngModel)]="searchTerm"
-        (input)="applyFilter()">
-    
-        <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#transactionModal"
-            (click)="openCreateForm()">+ Add Transaction</button>
-  
+  <input type="text" class="form-control w-50" placeholder="Search by stock name..." [(ngModel)]="searchTerm"
+    (input)="applyFilter()">
+
+  <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#transactionModal"
+    (click)="openCreateForm()">+ Add Transaction</button>
+
 </div>
 
 <!-- Transaction Table -->
 <div class="table-responsive">
-    <table class="table table-bordered table-hover text-center align-middle shadow-sm">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Stock</th>
-                <th>User</th>
-                <th>Zone</th>
-                <th>Quantity</th>
-                <th>Type</th>
-                <th>Price</th>
-                <th>Timestamp</th>
-                    <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let txn of paginatedTransactions">
-                <td>{{ txn.transactionId }}</td>
-                <td>{{ getStockName(txn.stockId) }} (ID: {{ txn.stockId }})</td>
-                <td>{{getUserName()}} </td>
-                <td>{{ getZoneName(txn.zoneId) }} (ID: {{ txn.zoneId }})</td>
-                <td><span class="badge bg-info">{{ txn.quantity }}</span></td>
-                <td>{{ txn.type }}</td>
-                <td>${{ txn.price.toFixed(2) }}</td>
-                <td>{{ txn.timestamp | date:'short' }}</td>
-                
-                    <td>
-                        <button class="btn btn-sm btn-danger" (click)="deleteTransaction(txn.transactionId)">Delete</button>
-                    </td>
-               
-            </tr>
-        </tbody>
-    </table>
+  <table class="table table-bordered table-hover text-center align-middle shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Stock</th>
+        <th>User</th>
+        <th>Zone</th>
+        <th>Quantity</th>
+        <th>Type</th>
+        <th>Price</th>
+        <th>Timestamp</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let txn of paginatedTransactions">
+        <td>{{ txn.transactionId }}</td>
+        <td>{{ getStockName(txn.stockId) | titlecase }} (ID: {{ txn.stockId }})</td>
+        <td>{{getUserName() | titlecase}} </td>
+        <td>{{ getZoneName(txn.zoneId) | titlecase}} (ID: {{ txn.zoneId }})</td>
+        <td><span class="badge bg-info">{{ txn.quantity }}</span></td>
+        <td>{{ txn.type | titlecase}}</td>
+        <td>₹{{ txn.price.toFixed(2)| titlecase }}</td>
+        <td>{{ txn.timestamp | titlecase | date:'short' }}</td>
+
+        <td>
+          <button class="btn btn-sm btn-danger" (click)="deleteTransaction(txn.transactionId)">Delete</button>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <!-- Pagination -->
 <nav *ngIf="totalPages() > 1" class="mt-3">
-    <ul class="pagination justify-content-center">
-        <li class="page-item" [class.disabled]="currentPage === 1">
-            <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
-        </li>
-        <li class="page-item" *ngFor="let page of [].constructor(totalPages()); let i = index"
-            [class.active]="currentPage === i + 1">
-            <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
-        </li>
-        <li class="page-item" [class.disabled]="currentPage === totalPages()">
-            <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
-        </li>
-    </ul>
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+    </li>
+    <li class="page-item" *ngFor="let page of [].constructor(totalPages()); let i = index"
+      [class.active]="currentPage === i + 1">
+      <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage === totalPages()">
+      <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+    </li>
+  </ul>
 </nav>
 
-  
+
 <!-- Modal for Create Transaction -->
 <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow">
-        <form (ngSubmit)="saveTransaction()" #transactionForm="ngForm">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="transactionModalLabel">Create Transaction</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
+      <form (ngSubmit)="saveTransaction()" #transactionForm="ngForm">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="transactionModalLabel">Create Transaction</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Stock</label>
+            <select class="form-select" [(ngModel)]="stockId" name="stockId" required>
+              <option *ngFor="let stock of stockList" [value]="stock.stockId">
+                {{ stock.stockName }} (ID: {{ stock.stockId }})
+              </option>
+            </select>
           </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">Stock</label>
-              <select class="form-select" [(ngModel)]="stockId" name="stockId" required>
-                <option *ngFor="let stock of stockList" [value]="stock.stockId">
-                  {{ stock.stockName }} (ID: {{ stock.stockId }})
-                </option>
-              </select>
-            </div>
-  
-  
-            <div class="mb-3">
+
+
+          <!-- <div class="mb-3">
               <label class="form-label">Zone</label>
               <select class="form-select" [(ngModel)]="zoneId" name="zoneId" required>
                 <option *ngFor="let zone of zoneList" [value]="zone.zoneId">
                   {{ zone.zoneName }} (ID: {{ zone.zoneId }})
                 </option>
               </select>
+            </div> -->
+          <div class="mb-3">
+            <label class="form-label">Zone</label>
+            <input type="text" class="form-control" [value]="getZoneName(zoneId)" readonly>
+          </div>
+
+
+
+          <div class="mb-3">
+            <label class="form-label">Type</label>
+            <select class="form-select" [(ngModel)]="type" name="type" required>
+              <option value="INBOUND">IN</option>
+              <option value="OUTBOUND">OUT</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" [(ngModel)]="quantity" name="quantity" required min="1"
+              max="stockQuantity" #stockQuantityref="ngModel">
+
+            <!-- <div class="form-text text-danger" *ngIf="quantity >= getStockQuantity(stockId)">Quantity must be greater than 0.</div> -->
+            <div class="form-text text-danger" *ngIf="type === 'OUTBOUND' && quantity > stockQuantity       ">
+              Quantity cannot exceed available stock {{ stockQuantity }}.
             </div>
-  
-            <div class="mb-3">
-              <label class="form-label">Quantity</label>
-              <input type="number" class="form-control" [(ngModel)]="quantity" name="quantity" required min="1">
-            </div>
-  
-            <div class="mb-3">
-              <label class="form-label">Type</label>
-              <select class="form-select" [(ngModel)]="type" name="type" required>
-                <option value="INBOUND">IN</option>
-                <option value="OUTBOUND">OUT</option>
-              </select>
-            </div>
-  
-            <div class="mb-3">
-              <label class="form-label">Price</label>
-              <input type="number" class="form-control" [(ngModel)]="price" name="price" required min="0" step="0.01">
+            <div class="form-text text-danger" *ngIf="type === 'INBOUND' && quantity > zoneQuantity       ">
+              Quantity cannot exceed available zone space {{ zoneQuantity }}.
             </div>
           </div>
-  
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-success" [disabled]="transactionForm.invalid" data-bs-dismiss="modal">
-              Create
-            </button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+          <div class="mb-3">
+            <label class="form-label">Price</label>
+            <input type="number" class="form-control" [(ngModel)]="price" name="price" required min="0" step="0.01">
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success"
+            [disabled]="transactionForm.invalid || type === 'OUTBOUND' && quantity > stockQuantity"
+            data-bs-dismiss="modal">
+            Create
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
-  
+</div>

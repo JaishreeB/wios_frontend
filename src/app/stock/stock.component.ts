@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonServiceService } from '../common-service.service';
 import { StockService, Stock, CreateStock, Vendor, Zone } from '../stock.service';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-stock',

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CreateZone, Zone, ZoneService } from '../zone.service';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { CommonServiceService } from '../common-service.service';
+
 
 @Component({
   selector: 'zone',
@@ -17,6 +18,8 @@ export class ZoneComponent implements OnInit {
   searchTerm = '';
   currentPage = 1;
   pageSize = 6;
+  selectedUsage = '';
+
 
   selectedZone: Zone = new Zone();
   createZone:CreateZone=new CreateZone();

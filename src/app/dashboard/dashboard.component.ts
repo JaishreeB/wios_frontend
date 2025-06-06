@@ -152,7 +152,7 @@ export class DashboardComponent implements OnInit {
     if (this.categoryChart) this.categoryChart.destroy();
 
     this.categoryChart = new Chart(ctx!, {
-      type: 'pie',
+      type: 'bar',
       data: {
         labels,
         datasets: [{

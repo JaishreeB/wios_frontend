@@ -1,48 +1,51 @@
-<!-- Search and Create Button -->
-<div class="d-flex justify-content-between align-items-center mb-4 pt-5 mt-5">
-    <input type="text" class="form-control w-50" placeholder="Search by stock name..." [(ngModel)]="searchTerm"
-        (input)="applyFilter()">
-    <ng-container *ngIf="isAdmin">
-        <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#stockModal"
-            (click)="openCreateForm()">+ Add Stock</button>
-    </ng-container>
-</div>
+<!-- Stock Cards -->
+<div class="container stock-container py-5 mt-5">
+    <!-- Search and Create Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4 ">
+        <input type="text" class="form-control w-50" placeholder="Search by stock name..." [(ngModel)]="searchTerm"
+            (input)="applyFilter()">
+        <ng-container *ngIf="isAdmin">
+            <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#stockModal"
+                (click)="openCreateForm()">+ Add Stock</button>
+        </ng-container>
+    </div>
+    <div class="row g-4 stock-cards-row">
+        <div class="col-md-6 col-lg-4" *ngFor="let stock of paginatedStocks">
+            <div class="card h-100 shadow-sm stock-card d-flex flex-column">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
 
-<!-- Stock Table -->
-<div class="table-responsive">
-    <table class="table table-bordered table-hover text-center align-middle shadow-sm">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Zone</th>
-                <th>Vendor</th>
-                <ng-container *ngIf="isAdmin">
-                    <th>Actions</th>
-                </ng-container>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let stock of paginatedStocks">
-                <td>{{ stock.stockId }}</td>
-                <td>{{ stock.stockName }}</td>
-                <td>{{ stock.stockCategory }}</td>
-                <td><span class="badge bg-info">{{ stock.stockQuantity }}</span></td>
-                <td>{{ getZoneName(stock.zoneId) }}</td>
-                <td>{{ getVendorName(stock.vendorId) }}</td>
-                <ng-container *ngIf="isAdmin">
-                    <td>
-                        <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#stockModal"
-                            (click)="openEditForm(stock)">Edit</button>
-                        <button class="btn btn-sm btn-danger" (click)="deleteStock(stock.stockId)">Delete</button>
-                    </td>
-                </ng-container>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                        <h5 class="card-title mb-2 d-flex align-items-center justify-content-between">
+                            <!-- <div style="font-size: small;  color: rgb(103, 108, 112);" >ID: {{ stock.stockId }} -->
+                            <span style="font-size:large; color: black;">
+                                {{ stock.stockName | titlecase }}
+                            </span>
+                            <!-- </div> -->
+
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted"></h6>
+                        <span class="badge bg-info stock-quantity-badge">{{ stock.stockQuantity }}</span>
+                        <p class="mb-1"><strong>Category:</strong> {{ stock.stockCategory | titlecase }}</p>
+                        <p class="mb-1"><strong>Zone:</strong> {{ getZoneName(stock.zoneId) | titlecase }}</p>
+                        <p class="mb-1"><strong>Vendor:</strong> {{ getVendorName(stock.vendorId) | titlecase }}</p>
+
+                    </div>
+                    <div class="d-flex position-absolute top-0 end-0 p-2">
+                        <div *ngIf="isAdmin">
+                            <a href="#" class="text-warning me-3" data-bs-toggle="modal" data-bs-target="#stockModal"
+                                (click)="openEditForm(stock)" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="text-danger" (click)="deleteStock(stock.stockId)" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <!-- Pagination -->
 <nav *ngIf="totalPages() > 1" class="mt-3">
@@ -58,7 +61,7 @@
             <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
         </li>
     </ul>
-</nav>
+</nav></div>
 
 <!-- Modal for Create/Edit Stock -->
 <div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">

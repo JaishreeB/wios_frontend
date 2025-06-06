@@ -49,11 +49,11 @@
 
         <div class="card-body pt-4">
           <h5 class="card-title text-purple">
-            <i class="fas fa-user-tag me-2"></i>{{ vendor.vendorName }}
+            <i class="fas fa-user-tag me-2"></i>{{ vendor.vendorName | titlecase}}
           </h5>
           <p><i class="fas fa-id-badge me-2"></i><strong>ID:</strong> {{ vendor.vendorId }}</p>
           <p><i class="fas fa-phone-alt me-2"></i><strong>Phone:</strong> {{ vendor.contactInfo }}</p>
-          <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ vendor.email }}</p>
+          <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ vendor.email | titlecase }}</p>
         </div>
       </div>
     </div>

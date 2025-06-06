@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonServiceService } from '../common-service.service';
 import { TransactionService, Transaction, CreateTransaction, Stock, Zone } from '../transaction.service';
-
+import {  TitleCasePipe } from '@angular/common';
 @Component({
   selector: 'app-transaction',
   standalone: true,
@@ -24,6 +24,8 @@ export class TransactionComponent implements OnInit {
   pageSize = 5;
 
   createTransaction: CreateTransaction = new CreateTransaction();
+  stockQuantity: any;
+  zoneQuantity: any;
 
   constructor(
     private transactionService: TransactionService,
@@ -40,6 +42,7 @@ export class TransactionComponent implements OnInit {
       zones.forEach(zone => this.zoneMap.set(zone.zoneId, zone));
     });
   }
+  
 
   loadAllTransactions(): void {
     this.transactionService.getAllTransactions().subscribe(data => {
@@ -90,7 +93,18 @@ export class TransactionComponent implements OnInit {
   }
   set stockId(value: number) {
     this.createTransaction.stockId = value;
+    const selectedStock = this.stockMap.get(Number(value));
+    console.log("Selected Stock:", selectedStock);
+    console.log(" Stock map:",  value);
+    console.log(" Stock map:",  this.stockMap);
+    console.log(" Stock map:",  this.stockMap.get(Number(value)));
+    if (selectedStock) {
+      this.zoneId = selectedStock.zoneId; // Set zoneId based on selected stock
+      this.stockQuantity = selectedStock.stockQuantity; // Set stock quantity based on selected stock
+      this.zoneQuantity = this.zoneMap.get(this.zoneId)?.availableSpace;
+
   }
+}
 
   get zoneId(): number {
     return this.createTransaction.zoneId;
@@ -102,6 +116,7 @@ export class TransactionComponent implements OnInit {
   get quantity(): number {
     return this.createTransaction.quantity;
   }
+  
   set quantity(value: number) {
     this.createTransaction.quantity = value;
   }
@@ -155,6 +170,7 @@ export class TransactionComponent implements OnInit {
   getZoneName(zoneId: number): string {
     return this.zoneMap.get(zoneId)?.zoneName ?? 'Unknown';
   }
+  
 
   // ✅ Safe getters for template use
   get stockList(): Stock[] {

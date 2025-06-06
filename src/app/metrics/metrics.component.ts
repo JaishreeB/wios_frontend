@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MetricsService, PerformanceMetric } from '../metrics.service';
 import { Chart, registerables } from 'chart.js';
+import { TitleCasePipe } from '@angular/common';
 
 Chart.register(...registerables);
 

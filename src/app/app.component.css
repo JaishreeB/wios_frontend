@@ -1,0 +1,15 @@
+.custom-footer {
+    background-color: #2E003E; /* Midnight Purple */
+    color: #E6E6FA; /* Lavender Mist */
+  }
+  
+  .footer-link {
+    color: #E6E6FA;
+    text-decoration: none;
+  }
+  
+  .footer-link:hover {
+    text-decoration: underline;
+    color: #DA70D6; /* Orchid */
+  }
+  

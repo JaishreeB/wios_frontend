@@ -54,7 +54,7 @@
         <tbody>
           <tr *ngFor="let metric of paginatedMetrics">
             <td>{{ metric.metricId }}</td>
-            <td>{{ metric.type }}</td>
+            <td>{{ metric.type | titlecase}}</td>
             <td>{{ metric.value.toFixed(2) }}</td>
             <td>{{ metric.timestamp | date: 'short' }}</td>
           </tr>
