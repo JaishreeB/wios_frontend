@@ -10,6 +10,7 @@ import { TransactionComponent } from './transaction/transaction.component';
 import { MetricsComponent } from './metrics/metrics.component';
 import { authGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { auth2Guard } from './auth2.guard';
 
 export const routes: Routes = [
     {
@@ -30,28 +31,32 @@ export const routes: Routes = [
     },
     {
         path: "zone",
-        component: ZoneComponent
+        component: ZoneComponent,
+        canActivate:[auth2Guard]
     },
     {
         path: "vendor",
-        component: VendorComponent
+        component: VendorComponent,
+        canActivate:[auth2Guard]
     },
     {
         path: "stock",
-        component: StockComponent
+        component: StockComponent,
+        canActivate:[auth2Guard]
     },
     {
         path: "transaction",
-        component: TransactionComponent
+        component: TransactionComponent,
+        canActivate:[auth2Guard]
     },
     {
         path: "metrics",
         component: MetricsComponent,
-        canActivate:[authGuard]
+        canActivate:[auth2Guard,authGuard]
     },
     {
         path: "dashboard",
         component: DashboardComponent,
-        canActivate:[authGuard]
+        canActivate:[auth2Guard,authGuard]
     }
 ];

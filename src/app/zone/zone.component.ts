@@ -3,6 +3,7 @@ import { CreateZone, Zone, ZoneService } from '../zone.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { CommonServiceService } from '../common-service.service';
+import { Stock, StockService } from '../stock.service';
 
 
 @Component({
@@ -19,13 +20,15 @@ export class ZoneComponent implements OnInit {
   currentPage = 1;
   pageSize = 6;
   selectedUsage = '';
+  selectedStockZone: any;
+  stocks: any[] = [];
 
 
   selectedZone: Zone = new Zone();
   createZone:CreateZone=new CreateZone();
   isEditMode = false;
 
-  constructor(private zoneService: ZoneService,private commonService:CommonServiceService) {}
+  constructor(private zoneService: ZoneService,private commonService:CommonServiceService,private stockService:StockService) {}
 
   ngOnInit(): void {
     this.loadZones();
@@ -114,6 +117,30 @@ export class ZoneComponent implements OnInit {
       window.location.reload();
     }
   }
+
+
+openStockModal(zone: any): void {
+  this.stockService.getStocksByZone(zone.zoneId).subscribe({
+    next: (response) => {
+      this.selectedStockZone = response.zone;
+      this.stocks = Array.isArray(response) ? response : response.stock|| [];
+
+      // Show Bootstrap modal
+      const modalElement = document.getElementById('stockModal');
+      if (modalElement) {
+        const modal = new (window as any).bootstrap.Modal(modalElement);
+        modal.show();
+      }
+    },
+    error: (err) => {
+      console.error('Error fetching stocks:', err);
+      alert('Error fetching stocks. Please try again later.');
+    }
+  });
+}
+
+  
+
 
   deleteZone(zoneId: number): void {
     if (confirm('Are you sure you want to delete this zone?')) {

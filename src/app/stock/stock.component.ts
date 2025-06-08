@@ -21,7 +21,7 @@ export class StockComponent implements OnInit {
 
   searchTerm = '';
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 6;
 
   selectedStock: Stock = new Stock();
   createStock: CreateStock = new CreateStock();

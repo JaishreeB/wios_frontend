@@ -165,8 +165,7 @@ export class DashboardComponent implements OnInit {
         responsive: true,
         plugins: {
           title: {
-            display: true,
-            text: 'Stock Quantity by Category'
+            display: true
           },
           tooltip: {
             callbacks: {

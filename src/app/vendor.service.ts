@@ -12,6 +12,8 @@ export class VendorService {
 
   private baseUrl = 'http://localhost:9090/vendors';
 
+  private zoneUrl = 'http://localhost:9090/zone';
+
   constructor(private client: HttpClient) { }
 
   public getAllVendors(): Observable<Vendor[]> {
@@ -30,6 +32,10 @@ export class VendorService {
 
   deleteVendor(vendorId: number): Observable<string> {
     return this.client.delete(`${this.baseUrl}/deleteById/${vendorId}`, { responseType: 'text' });
+  }
+
+  getZoneNameById(zoneId: number): Observable<string> {
+    return this.client.get<string>(`${this.zoneUrl}/fetchZoneNameById/${zoneId}`);
   }
 
 }

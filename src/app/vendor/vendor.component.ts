@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CreateVendor, Vendor, VendorService } from '../vendor.service';
 import { TitleCasePipe } from '@angular/common';
+import { Stock, StockService } from '../stock.service';
 
 @Component({
   selector: 'app-vendor',
@@ -13,6 +14,10 @@ import { TitleCasePipe } from '@angular/common';
 })
 
 export class VendorComponent implements OnInit {
+
+  selectedVendorStock: Vendor | null = null;
+  vendorStocks: Stock[] = [];
+
   vendors: Vendor[] = [];
   filteredVendors: Vendor[] = [];
   searchTerm = '';
@@ -25,7 +30,8 @@ export class VendorComponent implements OnInit {
 
   constructor(
     private vendorService: VendorService,
-    private commonService: CommonServiceService
+    private commonService: CommonServiceService,
+    private stockService: StockService
   ) { }
 
   ngOnInit(): void {
@@ -47,6 +53,18 @@ export class VendorComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  // getZoneName(zoneId: number): void {
+  //   this.vendorService.getZoneNameById(zoneId).subscribe({
+  //     next: (zoneName) => {
+  //       console.log("Zone Name:", zoneName);
+  //       // You can use the zoneName as needed, e.g., display it in the UI
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching zone name:', err);
+  //       alert('Error fetching zone name. Please try again later.');
+  //     }
+  //   });
+  // }
   get paginatedVendors(): Vendor[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredVendors.slice(start, start + this.pageSize);
@@ -126,6 +144,22 @@ export class VendorComponent implements OnInit {
         console.log("window reloaded from delete vendor vendor component.......")
       });
     }
+  }
+
+  openVendorStockModal(vendor: Vendor): void {
+    this.stockService.getStocksByVendor(vendor.vendorId).subscribe({
+      next: (response) => {
+        this.selectedVendor = response.vendor;
+        this.vendorStocks = response.stock;
+
+        const modal = new (window as any).bootstrap.Modal(document.getElementById('vendorStockModal')!);
+        modal.show();
+      },
+      error: (err) => {
+        console.error('Error fetching vendor stocks:', err);
+        alert('Error fetching vendor stocks. Please try again later.');
+      }
+    });
   }
 
   get isAdmin(): boolean {

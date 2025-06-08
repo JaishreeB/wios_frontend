@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonServiceService } from '../common-service.service';
 import { TransactionService, Transaction, CreateTransaction, Stock, Zone } from '../transaction.service';
-import {  TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 @Component({
   selector: 'app-transaction',
   standalone: true,
@@ -77,7 +77,9 @@ export class TransactionComponent implements OnInit {
 
   get paginatedTransactions(): Transaction[] {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredTransactions.slice(start, start + this.pageSize);
+    return this.filteredTransactions
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .slice(start, start + this.pageSize);
   }
 
   totalPages(): number {

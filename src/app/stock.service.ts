@@ -33,6 +33,16 @@ export class Zone {
   availableSpace!: number;
 }
 
+export interface ZoneStockResponse {
+  zone: Zone;
+  stock: Stock[];
+}
+
+export interface VendorStockResponse {
+  vendor: Vendor;
+  stock: Stock[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,7 +53,7 @@ export class StockService {
   private vendorUrl = 'http://localhost:9090/vendors';
   private zoneUrl = 'http://localhost:9090/zone';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllStocks(): Observable<Stock[]> {
     return this.http.get<Stock[]>(`${this.baseUrl}/fetchAll`);
@@ -71,24 +81,26 @@ export class StockService {
   getAllZones(): Observable<Zone[]> {
     return this.http.get<Zone[]>(`${this.zoneUrl}/fetchAll`);
   }
-  
+
   getAllVendors(): Observable<Vendor[]> {
     return this.http.get<Vendor[]>(`${this.vendorUrl}/fetchAll`);
   }
   getStocksByCategory(category: string): Observable<Stock[]> {
     return this.http.get<Stock[]>(`${this.baseUrl}/fetchCategory/${category}`);
   }
-  
-  getStocksByZone(zoneId: number): Observable<Stock[]> {
-    return this.http.get<Stock[]>(`${this.baseUrl}/fetchZone/${zoneId}`);
+
+
+  getStocksByZone(zoneId: number): Observable<ZoneStockResponse> {
+    return this.http.get<ZoneStockResponse>(`${this.baseUrl}/fetchZone/${zoneId}`);
   }
-  
+
+
   getStockById(stockId: number): Observable<Stock> {
     return this.http.get<Stock>(`${this.baseUrl}/fetchById/${stockId}`);
   }
-  getStocksByVendor(vendorId: number): Observable<Stock[]> {
-    return this.http.get<Stock[]>(`${this.baseUrl}/fetchVendor/${vendorId}`);
+  getStocksByVendor(vendorId: number): Observable<VendorStockResponse> {
+    return this.http.get<VendorStockResponse>(`${this.baseUrl}/fetchVendor/${vendorId}`);
   }
-  
-  
+
+
 }
