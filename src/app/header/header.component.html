@@ -41,7 +41,23 @@
         </li>
       }
       @else{
+        <!-- @if(isAdmin){
+        <a class="nav-link" routerLink="/notification">🔔</a>
+        } -->
+        <a class="nav-link" routerLink="/notification" *ngIf="isAdmin">
+          <div class="icon-wrapper">
+            <span class="bell-icon">🔔</span>
+            <span *ngIf="notificationCount > 0" class="badge-notification">
+              {{ notificationCount }}
+              <span class="visually-hidden">unread messages</span>
+            </span>
+          </div>
+        </a>
+        
+        
+        
         <li class="nav-item">
+          
           <a class="nav-link" href="/login" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Log Out</a>
         </li>
       }
@@ -49,4 +65,5 @@
     </div>
   </div>
 </nav>
+
 <router-outlet></router-outlet>

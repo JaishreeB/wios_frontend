@@ -37,12 +37,18 @@
                 </div>
               </div>
 
+              <div *ngIf="loginError" class=" text-danger text-center">
+                {{ loginError }}
+              </div>
+
               <!-- Buttons -->
               <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary me-2 w-50"style="background-color:#DA70D6">
                   <i class="fa-solid fa-right-to-bracket" ></i> Login
                 </button>
               </div>
+
+            
 
             </form>
           </div>

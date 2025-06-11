@@ -1,6 +1,10 @@
-<div class="container pt-5 mt-5">
-    <h2 class="mb-4">Performance Metrics</h2>
-  
+<div class="container pt-5 mt-4">
+    <h2 class="mb-4 d-inline-block">Performance Metrics</h2>
+    <!-- Additional Insights -->
+    <div class="d-inline-block float-end">
+      <button class="btn btn-outline-primary mb-3" (click)="showMetricDetails()">📘 How Metrics Are Calculated</button>
+    </div>
+
     <!-- Filters and Generate Button -->
     <div class="d-flex flex-wrap gap-3 align-items-end mb-4">
       <div class="form-group">
@@ -79,3 +83,20 @@
     </nav>
   </div>
   
+  <!-- Metric Explanation Modal -->
+  <div class="modal fade" id="metricModal" tabindex="-1" aria-labelledby="metricModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">📘 Metric Calculation Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Inventory Turnover Rate:</strong> Total Sales / Average Inventory</p>
+          <p><strong>Space Utilization:</strong> (Used Space / Total Capacity) × 100</p>
+          <p>Data is calculated based on the last 30 days of transactions and current zone capacity.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- </div> -->

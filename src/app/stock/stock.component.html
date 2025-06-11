@@ -10,11 +10,16 @@
         </ng-container>
     </div>
     <div class="row g-4 stock-cards-row">
-        <div class="col-md-6 col-lg-4" *ngFor="let stock of paginatedStocks">
+        <div *ngIf="paginatedStocks.length == 0" >
+            <p class="alert alert-warning text-center">
+                No stocks found. Please add some stocks.
+
+            </p>
+        </div>
+        <div class="col-md-6 col-lg-4" *ngFor="let stock of paginatedStocks" >
             <div class="card h-100 shadow-sm stock-card d-flex flex-column">
                 <div class="card-body d-flex flex-column justify-content-between">
                     <div>
-
                         <h5 class="card-title mb-2 d-flex align-items-center justify-content-between">
                             <!-- <div style="font-size: small;  color: rgb(103, 108, 112);" >ID: {{ stock.stockId }} -->
                             <span style="font-size:large; color: black;">

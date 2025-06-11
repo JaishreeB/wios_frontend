@@ -1,66 +1,67 @@
 <div class="container mt-4 pt-5">
-  <!-- <h2 class="mb-4 m">📊 Admin Dashboard</h2> -->
-
-  <!-- Summary Cards -->
+  <!-- Summary Cards with Trend -->
   <div class="row text-center mb-4">
-    <div class="col-md-2" *ngFor="let metric of [
-      { label: 'Total Zones', value: totalZones },
-      { label: 'Total Stocks', value: totalStocks },
-      { label: 'Total Capacity', value: totalCapacity },
-      { label: 'Available Space', value: availableSpace },
-      { label: 'Occupied Space', value: occupiedSpace }
-    ]">
+    <div class="col-md-2" *ngFor="let metric of summaryMetrics">
       <div class="card shadow-sm">
         <div class="card-body">
           <h5 class="card-title">{{ metric.label }}</h5>
-          <p class="card-text fs-4 fw-bold">{{ metric.value }}</p>
+          <p class="card-text fs-4 fw-bold">
+            <ng-container *ngIf="metric.change !== undefined; else normalValue">
+              <!-- {{ metric.label }}:   -->
+              <span [ngClass]="{'text-success': metric.change > 0, 'text-danger': metric.change < 0}">
+                {{ metric.change > 0 ? '+' : '' }}{{ metric.change }} units
+              </span>
+            </ng-container>
+            <ng-template #normalValue>
+              {{ metric.value }}
+            </ng-template>
+          </p>
+          
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Charts Row 1 -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title">Top 5 Utilized Zones</h5>
+          <canvas #topZonesChartCanvas></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title">Stock Category</h5>
+          <canvas #categoryChartCanvas ></canvas>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Charts Row 1: Stock Categories + Space Breakdown -->
-<div class="row g-4 mb-4">
-  <!-- Stock Categories Chart (Wider) -->
-  <div class="col-md-8 d-flex justify-content-center">
-    <div class="card shadow-sm w-100">
-      <div class="card-body text-center">
-        <h5 class="card-title">Stock Categories</h5>
-        <canvas #categoryChartCanvas style="width: 100%; max-width: 100%; height: 300px;"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- Space Breakdown Chart (Right Side) -->
-  <div class="col-md-4 d-flex justify-content-center">
-    <div class="card shadow-sm w-100">
-      <div class="card-body text-center">
-        <h5 class="card-title">Space Breakdown</h5>
-        <canvas #spaceBreakdownChartCanvas style="width: 100%; max-width: 100%; height: 400px;"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-  <!-- Charts Row 2: Turnover + Space Utilization -->
-  <div class="row g-4">
+  <!-- Charts Row 2 -->
+  <div class="row g-4 mb-4">
     <div class="col-md-6">
       <div class="card shadow-sm">
         <div class="card-body">
-          <h5 class="card-title">Turnover</h5>
+          <h5 class="card-title">Turnover Trend</h5>
           <canvas #turnoverChartCanvas></canvas>
         </div>
       </div>
     </div>
-
     <div class="col-md-6">
       <div class="card shadow-sm">
         <div class="card-body">
-          <h5 class="card-title">Space Utilization</h5>
+          <h5 class="card-title">Space Utilization Trend</h5>
           <canvas #spaceUtilChartCanvas></canvas>
         </div>
       </div>
     </div>
   </div>
+
+ 
 </div>

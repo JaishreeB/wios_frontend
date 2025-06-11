@@ -78,6 +78,86 @@
   </ul>
 </nav>
   
+  <!-- Modal -->
+  <div class="modal fade" id="vendorModal" tabindex="-1" aria-labelledby="vendorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow vendor-modal">
+        <form (ngSubmit)="saveVendor()" #vendorForm="ngForm">
+          <div class="modal-header bg-purple text-white">
+            <h5 class="modal-title" id="vendorModalLabel">
+              <i class="fas fa-user-edit me-2"></i>{{ isEditMode ? 'Edit Vendor' : 'Create Vendor' }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Vendor Name -->
+            <div class="mb-3">
+              <label class="form-label">Vendor Name</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="vendorName"
+                name="vendorName"
+                required
+                minlength="3"
+                maxlength="15"
+                pattern=".*\S.*"
+                #vendorNameRef="ngModel"
+              />
+              <div *ngIf="vendorNameRef.invalid && vendorNameRef.touched" class="text-danger small">
+                <div *ngIf="vendorNameRef.errors?.['required']">Vendor name is required.</div>
+                <div *ngIf="vendorNameRef.errors?.['minlength']">Minimum 3 characters required.</div>
+                <div *ngIf="vendorNameRef.errors?.['maxlength']">Maximum 15 characters allowed.</div>
+                <div *ngIf="vendorNameRef.errors?.['pattern']">Vendor name cannot be blank or whitespace.</div>
+              </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="mb-3">
+              <label class="form-label">Contact Number</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="contactInfo"
+                name="contactInfo"
+                required
+                pattern="^\d{10}$"
+                #contactInfoRef="ngModel"
+              />
+              <div *ngIf="contactInfoRef.invalid && contactInfoRef.touched" class="text-danger small">
+                <div *ngIf="contactInfoRef.errors?.['required']">Contact number is required.</div>
+                <div *ngIf="contactInfoRef.errors?.['pattern']">Mobile number must be 10 digits.</div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="email"
+                name="email"
+                required
+                #emailRef="ngModel"
+              />
+              <div *ngIf="emailRef.invalid && emailRef.touched" class="text-danger small">
+                <div *ngIf="emailRef.errors?.['required']">Email is required.</div>
+                <div *ngIf="emailRef.errors?.['email']">Invalid email format.</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-purple" [disabled]="vendorForm.invalid" data-bs-dismiss="modal">
+              {{ isEditMode ? 'Update' : 'Create' }}
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Vendor Stock Modal -->
 <div class="modal fade" id="vendorStockModal" tabindex="-1" aria-labelledby="vendorStockModalLabel" aria-hidden="true">

@@ -12,10 +12,17 @@
   </div>
   <!-- Zone Cards -->
   <div class="row g-4">
+    <div *ngIf="paginatedZones.length == 0" >
+      <p class="alert alert-warning text-center">
+        No zones found. Please add some zones.
+
+      </p>
+  </div>
     <div class="col-md-6 col-lg-4" *ngFor="let zone of paginatedZones">
       <div class="card zone-card h-100 animate-fade-in" (click)="openStockModal(zone)">
         <div class="card-body position-relative">
           @if(isAdmin){
+            
           <div class="position-absolute top-0 end-0 p-2" (click)="$event.stopPropagation()">
             <button class="btn btn-sm btn-outline-warning me-1" title="Edit" (click)="openEditForm(zone)"
               data-bs-toggle="modal" data-bs-target="#zoneModal">

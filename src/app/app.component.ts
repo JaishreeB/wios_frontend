@@ -7,6 +7,7 @@ import { FeaturesComponent } from './features/features.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { CommonServiceService } from './common-service.service';
 import { LoginService } from './login.service';
+import { NotificationService } from './notification.service';
 
 
 
@@ -27,4 +28,13 @@ export class AppComponent {
   //         this.loginService.logout();
   //       }
   // }
+  constructor(private commonService: CommonServiceService, private loginService: LoginService,private notificationService:NotificationService) {}
+  ngOnInit(): void {
+    // if (this.commonService.getUserRole() === 'ADMIN') {
+    //   this.notificationService.getNotifications().subscribe(data => {
+    //     this.notificationService.notificationCount = data.length;
+    //   });
+    // }
+  }
+  
 }

@@ -34,10 +34,10 @@ export class StockComponent implements OnInit {
 
     private cdRef: ChangeDetectorRef
 
-  ) { }
+  ) { this.loadAllStocks();}
 
   ngOnInit(): void {
-    this.loadAllStocks();
+    
     this.stockService.getAllZones().subscribe(zones => {
       zones.forEach(zone => this.zoneMap.set(zone.zoneId, zone));
       this.cdRef.detectChanges(); // Trigger change detection after async update

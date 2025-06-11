@@ -48,7 +48,10 @@ export class MetricsComponent implements OnInit,AfterViewInit {
    ngAfterViewInit() {
     console.log("inside metrix After:",this.metricsCanvas)
   }
-    
+  showMetricDetails() {
+    const modal = new (window as any).bootstrap.Modal(document.getElementById('metricModal'));
+    modal.show();
+  }
 
   loadMetrics(): void {
     this.loading = true;

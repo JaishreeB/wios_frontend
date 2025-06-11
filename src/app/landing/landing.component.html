@@ -1,14 +1,27 @@
 <div class="hero-container" style="background-image: url('warehouse2.jpg');">
-    <div class="hero-circle">
-      <div class="hero-section">
-        <h1 class="title animate-text">Zentrak</h1>
-        <h2>Optimize your warehouse</h2>
-        <h2>Maximize your profits</h2>
-        <p class="tagline">Streamline operations, reduce costs, and gain real-time visibility into your inventory.</p>
-        <button type="button" class="btn" routerLink="/login" style="background-color:#DA70D6">Get Started</button>
+  <div class="hero-circle">
+    <div class="hero-section">
+      <h1 class="title animate-text">Zentrak</h1>
+      
+      <div *ngIf="isLoggedIn; else guestView">
+        <h3>Welcome back, {{ username }}!</h3>
+        <p>Optimize your warehouse</p>
+        <p>Maximize your profits</p>
       </div>
+      
+      
+
+      <ng-template #guestView>
+      <h2>Optimize your warehouse</h2>
+      <h2>Maximize your profits</h2>
+        <p class="tagline">Streamline operations, reduce costs, and gain real-time visibility into your inventory.</p>
+
+        <button type="button" class="btn" routerLink="/login" style="background-color:#DA70D6">Get Started</button>
+      </ng-template>
     </div>
   </div>
+</div>
+
   <features></features>
   <app-footer></app-footer>
   <router-outlet></router-outlet>

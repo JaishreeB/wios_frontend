@@ -29,7 +29,7 @@
       <tr *ngFor="let txn of paginatedTransactions">
         <td>{{ txn.transactionId }}</td>
         <td>{{ getStockName(txn.stockId) | titlecase }} (ID: {{ txn.stockId }})</td>
-        <td>{{getUserName() | titlecase}} </td>
+        <td>{{getUserName(txn.userId) | titlecase}} </td>
         <td>{{ getZoneName(txn.zoneId) | titlecase}} (ID: {{ txn.zoneId }})</td>
         <td><span class="badge bg-info">{{ txn.quantity }}</span></td>
         <td>{{ txn.type | titlecase}}</td>
@@ -43,6 +43,11 @@
       </tr>
     </tbody>
   </table>
+  <div *ngIf="paginatedTransactions.length == 0" >
+    <p class="alert alert-warning text-center">
+      No transactions found. Please add some transactions.
+    </p>
+</div>
 </div>
 
 <!-- Pagination -->

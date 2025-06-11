@@ -3,16 +3,18 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonServiceService } from '../common-service.service';
 import { LoginService, LoginUser } from '../login.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'login',
-  imports: [FormsModule],
+  imports: [FormsModule,CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 
 export class LoginComponent {
-  constructor(private myservice: LoginService, private router: Router, private commonService: CommonServiceService) { }
+  loginError: string;
+  constructor(private myservice: LoginService, private router: Router, private commonService: CommonServiceService,private loginService:LoginService) { }
   
   authLogin(form: NgForm): any {
 
@@ -20,17 +22,21 @@ export class LoginComponent {
       next: (response) => {
         sessionStorage.setItem("username",form.value.username)
         sessionStorage.setItem("token", response);
-        1
+        
         console.log("Login successful:", response);
+       
         this.router.navigate([""]);
+      
         
         this.commonService.startTokenTimer();
       },
       error: (err) => {
         if (err.status === 403) {
-          alert("Invalid credentials. Please try again.");
+        //  alert("Invalid credentials. Please try again.");
+          this.loginError = "Invalid credentials. Please try again.";
         } else {
-          alert("Something went wrong. Please try later.");
+        //  alert("Something went wrong. Please try later.");
+          this.loginError = "Invalid credentials. Please try again.";
         }
       }
     });

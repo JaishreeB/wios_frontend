@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
+import { User } from './register.service';
 
 export class Transaction {
   transactionId!: number;
@@ -11,6 +12,10 @@ export class Transaction {
   type!: string;
   timestamp!: string;
   price!: number;
+  stockName?: string;
+zoneName?: string;
+userName?: string;
+
 }
 
 export class CreateTransaction {
@@ -20,6 +25,10 @@ export class CreateTransaction {
   quantity!: number;
   type!: string;
   price!: number;
+  stockName?: string;
+zoneName?: string;
+userName?: string;
+
 }
 
 export class Stock {
@@ -80,6 +89,9 @@ export class TransactionService {
   }
   getUserByName(userName: string): Observable<number> {
     return this.http.get<number>(`${this.userUrl}/getUserId/${userName}`);
+  }
+  getUserById(userId: number): Observable<User> {
+    return this.http.get<User>(`${this.userUrl}/fetchById/${userId}`);
   }
 
   getAllZones(): Observable<Zone[]> {

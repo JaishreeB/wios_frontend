@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonServiceService } from '../common-service.service';
 import { TransactionService, Transaction, CreateTransaction, Stock, Zone } from '../transaction.service';
-import { TitleCasePipe } from '@angular/common';
+
 @Component({
   selector: 'app-transaction',
   standalone: true,
@@ -18,6 +18,7 @@ export class TransactionComponent implements OnInit {
 
   stockMap: Map<number, Stock> = new Map();
   zoneMap: Map<number, Zone> = new Map();
+  userNameMap: Map<number, string> = new Map();
 
   searchTerm = '';
   currentPage = 1;
@@ -34,15 +35,21 @@ export class TransactionComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllTransactions();
+
     this.transactionService.getAllStocks().subscribe(stocks => {
-      stocks.forEach(stock => this.stockMap.set(stock.stockId, stock));
+      this.stockMap.clear();
+      stocks
+        .filter(stock => stock && stock.stockId)
+        .forEach(stock => this.stockMap.set(stock.stockId, stock));
     });
 
     this.transactionService.getAllZones().subscribe(zones => {
-      zones.forEach(zone => this.zoneMap.set(zone.zoneId, zone));
+      this.zoneMap.clear();
+      zones
+        .filter(zone => zone && zone.zoneId)
+        .forEach(zone => this.zoneMap.set(zone.zoneId, zone));
     });
   }
-  
 
   loadAllTransactions(): void {
     this.transactionService.getAllTransactions().subscribe(data => {
@@ -65,6 +72,16 @@ export class TransactionComponent implements OnInit {
           this.zoneMap.set(txn.zoneId, zone);
         });
       }
+
+      if (!this.userNameMap.has(txn.userId)) {
+        this.transactionService.getUserById(txn.userId).subscribe(user => {
+          if (user && user.name) {
+            this.userNameMap.set(txn.userId, user.name);
+          } else {
+            this.userNameMap.set(txn.userId, 'User Removed');
+          }
+        });
+      }
     });
   }
 
@@ -78,8 +95,8 @@ export class TransactionComponent implements OnInit {
   get paginatedTransactions(): Transaction[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredTransactions
-    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-    .slice(start, start + this.pageSize);
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(start, start + this.pageSize);
   }
 
   totalPages(): number {
@@ -96,17 +113,12 @@ export class TransactionComponent implements OnInit {
   set stockId(value: number) {
     this.createTransaction.stockId = value;
     const selectedStock = this.stockMap.get(Number(value));
-    console.log("Selected Stock:", selectedStock);
-    console.log(" Stock map:",  value);
-    console.log(" Stock map:",  this.stockMap);
-    console.log(" Stock map:",  this.stockMap.get(Number(value)));
     if (selectedStock) {
-      this.zoneId = selectedStock.zoneId; // Set zoneId based on selected stock
-      this.stockQuantity = selectedStock.stockQuantity; // Set stock quantity based on selected stock
+      this.zoneId = selectedStock.zoneId;
+      this.stockQuantity = selectedStock.stockQuantity;
       this.zoneQuantity = this.zoneMap.get(this.zoneId)?.availableSpace;
-
+    }
   }
-}
 
   get zoneId(): number {
     return this.createTransaction.zoneId;
@@ -118,7 +130,6 @@ export class TransactionComponent implements OnInit {
   get quantity(): number {
     return this.createTransaction.quantity;
   }
-  
   set quantity(value: number) {
     this.createTransaction.quantity = value;
   }
@@ -139,16 +150,38 @@ export class TransactionComponent implements OnInit {
 
   openCreateForm(): void {
     this.createTransaction = new CreateTransaction();
-    this.transactionService.getUserByName(sessionStorage.getItem("username")).subscribe(id => {
-      this.createTransaction.userId = id; // ✅ Now it's a number
-    });
-
+    const username = sessionStorage.getItem("username");
+    if (username) {
+      this.transactionService.getUserByName(username).subscribe(id => {
+        this.createTransaction.userId = id;
+      });
+    }
   }
 
   saveTransaction(): void {
-    this.transactionService.createTransaction(this.createTransaction).subscribe(() => this.loadAllTransactions());
-    window.location.reload();
+    const selectedStock = this.stockMap.get(this.stockId);
+    const selectedZone = this.zoneMap.get(this.zoneId);
+  
+    if (selectedStock) {
+      this.createTransaction.stockName = selectedStock.stockName;
+    }
+  
+    if (selectedZone) {
+      this.createTransaction.zoneName = selectedZone.zoneName;
+    }
+  
+    const username = sessionStorage.getItem("username");
+    if (username) {
+      this.transactionService.getUserByName(username).subscribe(userId => {
+        this.createTransaction.userId = userId;
+        this.createTransaction.userName = username;
+        this.transactionService.createTransaction(this.createTransaction).subscribe(() => {
+          this.loadAllTransactions();
+        });
+      });
+    }
   }
+  
 
   deleteTransaction(transactionId: number): void {
     if (confirm('Are you sure you want to delete this transaction?')) {
@@ -162,24 +195,22 @@ export class TransactionComponent implements OnInit {
   }
 
   getStockName(stockId: number): string {
-    return this.stockMap.get(stockId)?.stockName ?? 'Unknown';
+    return this.stockMap.get(stockId)?.stockName ?? 'Unknown Stock';
   }
 
-  getUserName(): string {
-    return sessionStorage.getItem("username")
+  getUserName(userId: number): string {
+    return this.userNameMap.get(userId) ?? 'Unknown User';
   }
 
   getZoneName(zoneId: number): string {
-    return this.zoneMap.get(zoneId)?.zoneName ?? 'Unknown';
+    return this.zoneMap.get(zoneId)?.zoneName ?? 'Unknown Zone';
   }
-  
 
-  // ✅ Safe getters for template use
   get stockList(): Stock[] {
-    return Array.from(this.stockMap.values());
+    return Array.from(this.stockMap.values()).filter(stock => stock && stock.stockId && stock.stockName);
   }
 
   get zoneList(): Zone[] {
-    return Array.from(this.zoneMap.values());
+    return Array.from(this.zoneMap.values()).filter(zone => zone && zone.zoneId && zone.zoneName);
   }
 }

@@ -11,6 +11,7 @@ import { MetricsComponent } from './metrics/metrics.component';
 import { authGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { auth2Guard } from './auth2.guard';
+import { NotificationComponent } from './notification/notification.component';
 
 export const routes: Routes = [
     {
@@ -57,6 +58,11 @@ export const routes: Routes = [
     {
         path: "dashboard",
         component: DashboardComponent,
+        canActivate:[auth2Guard,authGuard]
+    },
+    {
+        path: "notification",
+        component: NotificationComponent,
         canActivate:[auth2Guard,authGuard]
     }
 ];
